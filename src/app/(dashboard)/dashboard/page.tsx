@@ -143,7 +143,7 @@ export default async function DashboardPage() {
         <MemberQuickList
           title="Expiring Soon Members"
           description="These members are the most urgent to follow up with today."
-          icon={Clock3}
+          icon="clock"
           members={expiringMembers}
           emptyTitle="No urgent renewals right now"
           emptyDescription="Everyone has more than 2 days left on their current subscription."
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
         <MemberQuickList
           title="Expired Members"
           description="These members have already passed their membership end date."
-          icon={AlertTriangle}
+          icon="alert"
           members={expiredMembers}
           emptyTitle="No expired memberships"
           emptyDescription="There are no expired members to renew at the moment."

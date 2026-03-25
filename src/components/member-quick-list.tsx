@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
-import { ArrowRight, MessageCircle, RefreshCw } from "lucide-react";
+import { AlertTriangle, ArrowRight, Clock3, MessageCircle, RefreshCw } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { RenewModal } from "@/components/renew-modal";
 import { StatusBadge } from "@/components/status-badge";
@@ -21,10 +20,15 @@ import { formatDisplayDate } from "@/lib/date";
 import { getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
 
+const quickListIcons = {
+  clock: Clock3,
+  alert: AlertTriangle,
+} as const;
+
 type MemberQuickListProps = {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: keyof typeof quickListIcons;
   members: MemberWithSubscription[];
   emptyTitle: string;
   emptyDescription: string;
@@ -33,11 +37,12 @@ type MemberQuickListProps = {
 export function MemberQuickList({
   title,
   description,
-  icon: Icon,
+  icon,
   members,
   emptyTitle,
   emptyDescription,
 }: MemberQuickListProps) {
+  const Icon = quickListIcons[icon];
   const [renewingMember, setRenewingMember] = useState<MemberWithSubscription | null>(
     null,
   );
