@@ -152,8 +152,9 @@ export function Sidebar({
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
-        <SheetContent
+      <SheetContent
           side={isRtl ? "right" : "left"}
+          onOpenAutoFocus={(event) => event.preventDefault()}
           className={cn(
             "soft-scrollbar overflow-y-auto bg-card/96 p-5 pt-4",
             isRtl ? "border-l border-border/70" : "border-r border-border/70",
