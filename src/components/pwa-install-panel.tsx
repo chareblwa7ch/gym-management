@@ -100,13 +100,13 @@ export function PwaInstallPanel() {
     <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
       <Card className="border-border/70 bg-card/88 surface-shadow">
         <CardHeader className="space-y-4 p-5 sm:p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/12 text-primary ring-1 ring-primary/10">
+          <div className="flex items-start gap-4">
+            <div className="mt-1 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary ring-1 ring-primary/10">
               <Download className="size-5" />
             </div>
-            <div>
+            <div className="min-w-0 space-y-2">
               <CardTitle className="text-2xl sm:text-[1.7rem]">{copy.cardTitle}</CardTitle>
-              <CardDescription className="mt-1 text-sm leading-6">
+              <CardDescription className="text-sm leading-6 sm:text-[0.97rem]">
                 {copy.cardDescription}
               </CardDescription>
             </div>
@@ -129,18 +129,21 @@ export function PwaInstallPanel() {
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
             <Button
               type="button"
               size="lg"
-              className="sm:min-w-[12rem]"
+              className="sm:min-w-[12rem] sm:flex-none"
               onClick={handleInstall}
               disabled={!canPromptInstall || isInstalling || isInstalled}
             >
               {isInstalling ? <Loader2 className="size-5 animate-spin" /> : <Download className="size-5" />}
               {installButtonLabel}
             </Button>
-            <Badge variant="muted" className="justify-center rounded-full px-4 py-3 text-sm font-medium sm:justify-start">
+            <Badge
+              variant="muted"
+              className="justify-center rounded-[1.4rem] px-4 py-3 text-center text-sm font-medium leading-6 sm:min-h-[3.5rem] sm:flex-1 sm:justify-start sm:text-start"
+            >
               {copy.browserPromptHelp}
             </Badge>
           </div>
