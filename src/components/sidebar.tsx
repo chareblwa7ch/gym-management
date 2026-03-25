@@ -141,7 +141,7 @@ export function Sidebar({
     <>
       <aside
         className={cn(
-          "hidden bg-card/88 backdrop-blur md:block md:w-[6.25rem] xl:w-[18.5rem]",
+          "hidden bg-card/88 backdrop-blur md:block md:shrink-0 md:w-[6.25rem] xl:w-[18.5rem]",
           isRtl ? "border-l border-border/70" : "border-r border-border/70",
         )}
       >

@@ -29,7 +29,7 @@ export function AppShell({ children, userEmail, userRole }: AppShellProps) {
         userEmail={userEmail}
         userRole={userRole}
       />
-      <div className="flex min-h-screen min-w-0 flex-col">
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden">
         <Header onMenuClick={() => setMobileOpen(true)} />
         <main className="flex-1 px-3 py-4 sm:px-5 sm:py-6 lg:px-7 xl:px-8">
           <div className="mx-auto w-full max-w-[92rem]">{children}</div>
