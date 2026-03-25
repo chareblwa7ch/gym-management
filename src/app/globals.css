@@ -3,11 +3,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.986 0.006 95.9);
+  --background: oklch(0.989 0.004 94.8);
   --foreground: oklch(0.252 0.018 245.2);
-  --card: oklch(0.995 0.004 95.8 / 0.97);
+  --card: oklch(0.996 0.004 95.8 / 0.98);
   --card-foreground: oklch(0.248 0.018 243.1);
-  --popover: oklch(0.998 0.004 95.4);
+  --popover: oklch(0.998 0.004 95.4 / 0.98);
   --popover-foreground: oklch(0.248 0.018 243.1);
   --primary: oklch(0.62 0.154 24.2);
   --primary-foreground: oklch(0.988 0.01 95.8);
@@ -63,11 +63,11 @@
 }
 
 .dark {
-  --background: oklch(0.195 0.012 248.8);
+  --background: oklch(0.205 0.012 248.8);
   --foreground: oklch(0.955 0.008 96.2);
-  --card: oklch(0.245 0.014 249 / 0.97);
+  --card: oklch(0.255 0.014 249 / 0.975);
   --card-foreground: oklch(0.95 0.01 95.8);
-  --popover: oklch(0.252 0.015 248.2);
+  --popover: oklch(0.258 0.014 248.2 / 0.98);
   --popover-foreground: oklch(0.95 0.01 95.8);
   --primary: oklch(0.69 0.138 24.8);
   --primary-foreground: oklch(0.2 0.015 248.3);
@@ -100,8 +100,8 @@ html {
 body {
   @apply min-h-screen bg-background font-sans text-foreground antialiased;
   background-image:
-    radial-gradient(circle at top, oklch(0.7 0.142 24.8 / 0.16), transparent 28%),
-    radial-gradient(circle at bottom left, oklch(0.67 0.09 50.2 / 0.11), transparent 34%);
+    radial-gradient(circle at top, oklch(0.7 0.132 24.8 / 0.12), transparent 28%),
+    radial-gradient(circle at bottom left, oklch(0.67 0.08 50.2 / 0.08), transparent 34%);
   overflow-x: clip;
 }
 
@@ -159,5 +159,5 @@ textarea {
 }
 
 .page-section {
-  @apply space-y-6;
+  @apply space-y-7 sm:space-y-8;
 }

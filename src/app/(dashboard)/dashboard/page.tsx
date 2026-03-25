@@ -72,7 +72,7 @@ export default async function DashboardPage() {
         description="See who needs attention first, then renew, search, and manage members without extra steps."
         icon={Users}
         action={
-          <Button asChild size="lg" className="sm:w-fit">
+          <Button asChild size="lg" className="w-full sm:w-fit">
             <Link href="/members/new">
               <UserPlus className="size-5" />
               Add new member
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
       </section>
 
       <Card className="overflow-hidden border-border/70 bg-card/85">
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <CardHeader className="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-6">
           <div className="flex items-start gap-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
               <Activity className="size-5" />
@@ -176,13 +176,13 @@ export default async function DashboardPage() {
             <Link href="/members">Open all members</Link>
           </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 pt-3 sm:p-6 sm:pt-6">
           {recentActivity.length ? (
             <div className="space-y-3">
               {recentActivity.map((activity) => (
                 <div
                   key={activity.id}
-                  className="flex flex-col gap-3 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
                 >
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl bg-card text-primary ring-1 ring-border/70">

@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 type SearchBarProps = {
@@ -19,11 +19,21 @@ export function SearchBar({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="pl-11"
+        className="pr-11 pl-11"
         aria-label={placeholder}
         autoComplete="off"
         spellCheck={false}
       />
+      {value ? (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          aria-label="Clear search"
+          className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/60"
+        >
+          <X className="size-4" />
+        </button>
+      ) : null}
     </div>
   );
 }

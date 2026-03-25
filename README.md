@@ -1,112 +1,81 @@
-# ElAmidy Sports Fitness Dashboard
+# ElAmidy Sports Fitness
 
-Private membership management app for the owner and staff of ElAmidy Sports Fitness.
+Simple internal membership management for ElAmidy Sports Fitness. The app is built for the owner or staff to register members, record monthly payments, track expiry dates, and renew memberships quickly on phone, tablet, or desktop.
 
-## Stack
+## What It Does
+
+- Staff-only login with Supabase Auth
+- Add members with name, phone, notes, and first payment
+- Save every renewal as a separate subscription row
+- Track active, expiring soon, and expired memberships
+- Search members quickly by name or phone
+- Open WhatsApp reminders from member screens
+
+## Tech Stack
 
 - Next.js 16 App Router
 - Tailwind CSS v4
 - shadcn-style UI components
 - Lucide icons
 - Supabase Auth + Postgres
-- Vercel-ready deployment
+- Vercel deployment
 
-## Exact Environment Variables
+## Environment Variables
 
-Create a `.env.local` file in the project root with:
+Create `.env.local` in the project root:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-You can start from [`.env.example`](./.env.example).
+You can copy [`.env.example`](./.env.example) as a starting point.
 
-## Exact Supabase SQL Schema
+## Local Setup
 
-Run the exact contents of [`supabase/schema.sql`](./supabase/schema.sql) in the Supabase SQL Editor.
-
-That schema creates:
-
-- `members`
-- `subscriptions`
-- row level security policies for authenticated users
-- `create_member_with_subscription(...)`
-- `renew_membership(...)`
-- member field normalization and `updated_at` triggers
-
-## Exact Local Setup Steps
-
-1. Install dependencies:
+1. Install dependencies.
 
 ```bash
 npm install
 ```
 
 2. Create a Supabase project.
-
-3. In Supabase, open `SQL Editor` and run [`supabase/schema.sql`](./supabase/schema.sql).
-
-4. In Supabase, open `Authentication > Users` and create at least one email/password user for staff access.
-
-5. Create `.env.local` from [`.env.example`](./.env.example):
-
-```bash
-copy .env.example .env.local
-```
-
-6. Fill in the two environment variables:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
-
-7. Start the app:
+3. In the Supabase SQL Editor, run [`supabase/schema.sql`](./supabase/schema.sql).
+4. In `Authentication > Users`, create at least one email/password staff user.
+5. Create `.env.local` and add the two environment variables above.
+6. Start the app.
 
 ```bash
 npm run dev
 ```
 
-8. Open `http://localhost:3000/login` and sign in with the Supabase user you created.
+7. Open `http://localhost:3000/login`.
 
-## Exact Vercel Deployment Steps
+## Supabase Setup
 
-1. Push this project to GitHub.
+The schema in [`supabase/schema.sql`](./supabase/schema.sql) creates:
 
-2. In Vercel, click `Add New... > Project` and import the repository.
+- `members`
+- `subscriptions`
+- row level security policies for authenticated users
+- `create_member_with_subscription(...)`
+- `renew_membership(...)`
+- normalization and timestamp triggers
 
-3. Keep the default Next.js framework settings.
+Every renewal creates a new row in `subscriptions`. Membership expiry is always `payment_date + 30 days`.
 
-4. In `Project Settings > Environment Variables`, add:
+## Vercel Deployment
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+1. Push the project to GitHub.
+2. Import the repository into Vercel as a Next.js project.
+3. Add these environment variables in Vercel:
+   `NEXT_PUBLIC_SUPABASE_URL`
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Redeploy after saving the variables.
+5. Make sure the same Supabase project has already run [`supabase/schema.sql`](./supabase/schema.sql).
+6. Create the staff user in Supabase Auth.
 
-5. Redeploy the project after saving the environment variables.
+## Branding
 
-6. In Supabase, make sure the SQL schema from [`supabase/schema.sql`](./supabase/schema.sql) has been run in the same project.
-
-7. In Supabase Auth, create the owner/staff user who will log in on the deployed app.
-
-8. Open the deployed Vercel URL and sign in at `/login`.
-
-If the deployed site shows the setup screen, it means one of these is still missing:
-
-- Vercel environment variables
-- Supabase SQL schema
-- a Supabase Auth user
-
-## Notes
-
-- The app uses real Supabase data only.
-- Every renewal creates a new row in `subscriptions`.
-- Membership expiry is always `payment_date + 30 days`.
-- If `public/logo.png` exists, the real logo is shown.
-- If `public/logo.png` does not exist, the app falls back to the `ESF` placeholder.
-# gym-management
-# gym-management
-# gym-management
-# gym-management
-# gym-management
-# gym-management
+- If `public/logo.png` exists, the app shows the real logo.
+- If it does not exist, the app falls back to the built-in `ESF` placeholder.

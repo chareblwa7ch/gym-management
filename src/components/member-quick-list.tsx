@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDisplayDate } from "@/lib/date";
-import { getWhatsAppLink } from "@/lib/phone";
+import { getWhatsAppActionLabel, getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
 
 const quickListIcons = {
@@ -81,10 +81,17 @@ export function MemberQuickList({
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="text-lg font-semibold break-words">{member.full_name}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-lg font-semibold break-words">{member.full_name}</p>
+                        <div className="sm:hidden">
+                          <StatusBadge status={member.status} />
+                        </div>
+                      </div>
                       <p className="text-sm text-muted-foreground break-all">{member.phone}</p>
                     </div>
-                    <StatusBadge status={member.status} />
+                    <div className="hidden sm:block">
+                      <StatusBadge status={member.status} />
+                    </div>
                   </div>
 
                   <div className="grid gap-3 text-sm sm:grid-cols-2">
@@ -128,12 +135,17 @@ export function MemberQuickList({
                       className="col-span-2 w-full justify-start sm:col-auto sm:w-auto"
                     >
                       <Link
-                        href={getWhatsAppLink(member.phone, member.full_name)}
+                        href={getWhatsAppLink(member.phone, {
+                          memberName: member.full_name,
+                          template: "membership-status",
+                          status: member.status,
+                          daysRemaining: member.daysRemaining,
+                        })}
                         target="_blank"
                         rel="noreferrer"
                       >
                         <MessageCircle className="size-4" />
-                        WhatsApp
+                        {getWhatsAppActionLabel(member.status)}
                       </Link>
                     </Button>
                   </div>

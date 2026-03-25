@@ -1,5 +1,6 @@
 import { History, WalletCards } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -27,19 +28,24 @@ export function SubscriptionHistoryTable({
 }) {
   return (
     <Card className="overflow-hidden border-border/70 bg-card/85">
-      <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
-          <History className="size-5" />
+      <CardHeader className="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+        <div className="flex items-start gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+            <History className="size-5" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl">Payment history</CardTitle>
+            <CardDescription>
+              Every renewal is saved as its own payment record.
+            </CardDescription>
+          </div>
         </div>
-        <div>
-          <CardTitle className="text-2xl">Subscription history</CardTitle>
-          <CardDescription>
-            Every renewal is saved as its own payment record.
-          </CardDescription>
-        </div>
+        <Badge variant="muted">
+          {subscriptions.length} payment{subscriptions.length === 1 ? "" : "s"}
+        </Badge>
       </CardHeader>
       <Separator />
-      <CardContent>
+      <CardContent className="p-3 pt-3 sm:p-6 sm:pt-6">
         {subscriptions.length ? (
           <>
             <div className="hidden md:block">
@@ -73,7 +79,7 @@ export function SubscriptionHistoryTable({
               {subscriptions.map((subscription) => (
                 <div
                   key={subscription.id}
-                  className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4"
+                  className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5"
                 >
                   <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                     <WalletCards className="size-4" />

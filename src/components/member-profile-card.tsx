@@ -31,7 +31,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { formatDisplayDate } from "@/lib/date";
 import { deleteMember } from "@/lib/member-mutations";
-import { getWhatsAppLink } from "@/lib/phone";
+import { getWhatsAppActionLabel, getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
 
 function DetailItem({
@@ -101,24 +101,29 @@ export function MemberProfileCard({ member }: { member: MemberWithSubscription }
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <Button type="button" onClick={() => setRenewOpen(true)}>
+          <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto">
+            <Button type="button" size="lg" onClick={() => setRenewOpen(true)}>
               <RefreshCw className="size-4" />
               Renew Membership
             </Button>
-            <Button type="button" variant="outline" onClick={() => setEditOpen(true)}>
-              <Edit3 className="size-4" />
-              Edit
-            </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="lg">
               <Link
-                href={getWhatsAppLink(member.phone, member.full_name)}
+                href={getWhatsAppLink(member.phone, {
+                  memberName: member.full_name,
+                  template: "membership-status",
+                  status: member.status,
+                  daysRemaining: member.daysRemaining,
+                })}
                 target="_blank"
                 rel="noreferrer"
               >
                 <MessageCircle className="size-4" />
-                WhatsApp
+                {getWhatsAppActionLabel(member.status)}
               </Link>
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setEditOpen(true)}>
+              <Edit3 className="size-4" />
+              Edit
             </Button>
             <Button type="button" variant="ghost" onClick={() => setDeleteOpen(true)}>
               <Trash2 className="size-4 text-rose-500" />
@@ -128,24 +133,53 @@ export function MemberProfileCard({ member }: { member: MemberWithSubscription }
         </CardHeader>
         <Separator />
 
-        <CardContent className="grid gap-4 text-sm sm:grid-cols-2 xl:grid-cols-4">
-          <DetailItem
-            icon={Phone}
-            label="Phone"
-            value={<p className="break-all">{member.phone}</p>}
-          />
-          <DetailItem
-            icon={CalendarClock}
-            label="Last payment"
-            value={formatDisplayDate(member.latestSubscription?.payment_date ?? null)}
-          />
-          <DetailItem
-            icon={CalendarDays}
-            label="Expiry date"
-            value={formatDisplayDate(member.latestSubscription?.expiry_date ?? null)}
-          />
-          <DetailItem icon={RefreshCw} label="Current status" value={member.relativeExpiry} />
-          <div className="rounded-3xl border border-border/70 bg-muted/35 p-4 sm:col-span-2 xl:col-span-4">
+        <CardContent className="space-y-4 p-4 pt-4 sm:p-6 sm:pt-6">
+          <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                Member information
+              </p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <DetailItem
+                  icon={Phone}
+                  label="Phone"
+                  value={<p className="break-all">{member.phone}</p>}
+                />
+                <DetailItem
+                  icon={RefreshCw}
+                  label="Current status"
+                  value={
+                    <div className="space-y-3">
+                      <StatusBadge status={member.status} />
+                      <p className="text-base font-semibold text-foreground">
+                        {member.relativeExpiry}
+                      </p>
+                    </div>
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                Current membership
+              </p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <DetailItem
+                  icon={CalendarClock}
+                  label="Last payment"
+                  value={formatDisplayDate(member.latestSubscription?.payment_date ?? null)}
+                />
+                <DetailItem
+                  icon={CalendarDays}
+                  label="Expiry date"
+                  value={formatDisplayDate(member.latestSubscription?.expiry_date ?? null)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5">
             <div className="flex items-center gap-2 text-muted-foreground">
               <NotebookText className="size-4" />
               <p className="text-sm font-medium">Notes</p>

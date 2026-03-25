@@ -32,7 +32,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { formatDisplayDate } from "@/lib/date";
 import { deleteMember } from "@/lib/member-mutations";
-import { getWhatsAppLink } from "@/lib/phone";
+import { getWhatsAppActionLabel, getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
 
 type MemberTableProps = {
@@ -165,18 +165,28 @@ export function MemberTable({
             >
               <div className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:items-center">
                 <div className="min-w-0">
-                  <p className="break-words text-lg font-semibold">{member.full_name}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="break-words text-lg font-semibold">{member.full_name}</p>
+                    <div className="xl:hidden">
+                      <StatusBadge status={member.status} />
+                    </div>
+                  </div>
                   <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
                     <span className="break-all">{member.phone}</span>
                     <Link
-                      href={getWhatsAppLink(member.phone, member.full_name)}
+                      href={getWhatsAppLink(member.phone, {
+                        memberName: member.full_name,
+                        template: "membership-status",
+                        status: member.status,
+                        daysRemaining: member.daysRemaining,
+                      })}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-1 font-semibold text-primary"
                       aria-label={`Open WhatsApp chat for ${member.full_name}`}
                     >
                       <MessageCircle className="size-4" />
-                      WhatsApp
+                      {getWhatsAppActionLabel(member.status)}
                     </Link>
                   </div>
                 </div>
@@ -214,12 +224,22 @@ export function MemberTable({
                   <MemberField
                     label="Status"
                     icon={Users}
-                    value={<StatusBadge status={member.status} />}
+                    value={<div className="hidden xl:block"><StatusBadge status={member.status} /></div>}
                   />
                 </div>
 
-                <div className="flex flex-wrap gap-2 xl:justify-end">
-                  <Button asChild variant="outline" size="sm">
+                <div className="grid grid-cols-2 gap-2 xl:flex xl:flex-wrap xl:justify-end">
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    className="w-full justify-center xl:w-auto"
+                    onClick={() => setRenewingMember(member)}
+                  >
+                    <RefreshCw className="size-4" />
+                    Renew
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="w-full justify-center xl:w-auto">
                     <Link href={`/members/${member.id}`}>
                       <Eye className="size-4" />
                       View
@@ -227,17 +247,9 @@ export function MemberTable({
                   </Button>
                   <Button
                     type="button"
-                    variant="default"
-                    size="sm"
-                    onClick={() => setRenewingMember(member)}
-                  >
-                    <RefreshCw className="size-4" />
-                    Renew
-                  </Button>
-                  <Button
-                    type="button"
                     variant="ghost"
                     size="sm"
+                    className="w-full justify-center xl:w-auto"
                     onClick={() => setEditingMember(member)}
                     aria-label={`Edit ${member.full_name}`}
                   >
@@ -248,6 +260,7 @@ export function MemberTable({
                     type="button"
                     variant="ghost"
                     size="sm"
+                    className="w-full justify-center xl:w-auto"
                     onClick={() => setDeletingMember(member)}
                     aria-label={`Delete ${member.full_name}`}
                   >

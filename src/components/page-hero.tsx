@@ -35,13 +35,13 @@ export function PageHero({
             <CardTitle className="mt-2 break-words text-[2rem] font-semibold sm:text-4xl">
               {title}
             </CardTitle>
-            <CardDescription className="mt-3 max-w-3xl text-sm sm:text-base">
+            <CardDescription className="mt-3 max-w-3xl text-sm leading-7 sm:text-base">
               {description}
             </CardDescription>
           </div>
         </div>
 
-        {action ? <div className="relative">{action}</div> : null}
+        {action ? <div className="relative w-full sm:w-auto">{action}</div> : null}
       </CardContent>
     </Card>
   );

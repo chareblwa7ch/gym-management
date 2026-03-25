@@ -56,7 +56,7 @@ export function DashboardStatCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 bg-muted/15 px-4 py-4 sm:px-6">
-        <p className="text-sm font-medium text-muted-foreground">Today</p>
+        <p className="text-sm font-medium text-muted-foreground">Live status</p>
         <Badge variant="muted" className="shrink-0">
           <Activity className="size-3.5" />
           Overview

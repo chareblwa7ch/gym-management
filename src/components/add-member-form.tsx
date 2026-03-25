@@ -93,7 +93,22 @@ export function AddMemberForm() {
       </CardHeader>
       <CardContent>
         <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+          <div className="rounded-[calc(var(--radius)+0.05rem)] border border-border/70 bg-muted/25 p-4">
+            <p className="text-sm font-semibold text-foreground">
+              Monthly plan: {GYM_PLAN_AMOUNT} DH
+            </p>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              The membership expires automatically 30 days after the payment date.
+            </p>
+          </div>
+
           <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              Member information
+            </p>
+          </div>
+
+          <div className="space-y-2.5">
             <Label htmlFor="full-name">Full name</Label>
             <div className="relative">
               <UserRound className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -124,7 +139,7 @@ export function AddMemberForm() {
             ) : null}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <Label htmlFor="phone-number">Phone number</Label>
             <div className="relative">
               <Phone className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -157,6 +172,12 @@ export function AddMemberForm() {
           </div>
 
           <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              First payment
+            </p>
+          </div>
+
+          <div className="space-y-2.5">
             <Label htmlFor="payment-date">Payment date</Label>
             <div className="relative">
               <CalendarClock className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -192,7 +213,7 @@ export function AddMemberForm() {
             ) : null}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <Label htmlFor="notes">Notes</Label>
             <Textarea
               id="notes"
@@ -217,8 +238,12 @@ export function AddMemberForm() {
             ) : (
               <ArrowRight className="size-5" />
             )}
-            Save member
+            {isPending ? "Saving member..." : "Save member"}
           </Button>
+
+          <p className="text-sm text-muted-foreground">
+            After saving, the member profile opens automatically.
+          </p>
         </form>
       </CardContent>
     </Card>

@@ -24,8 +24,8 @@ const variants: Record<
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   return (
-    <Badge variant={variants[status]}>
-      <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
+    <Badge variant={variants[status]} className="px-3.5 py-1.5 text-sm">
+      <span className="size-2 rounded-full bg-current" aria-hidden="true" />
       {labels[status]}
     </Badge>
   );

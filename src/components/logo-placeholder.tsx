@@ -51,7 +51,7 @@ export function LogoPlaceholder({
     <div className={cn("flex items-center gap-3", className)}>
       <div
         className={cn(
-          "relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 via-red-500 to-amber-400 text-white shadow-lg shadow-red-950/15",
+          "relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 via-red-500 to-amber-400 text-white shadow-lg shadow-red-950/15 ring-1 ring-white/10",
           sizeClasses[size],
         )}
       >
