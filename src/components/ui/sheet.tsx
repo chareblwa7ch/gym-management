@@ -54,7 +54,12 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/50">
+      <DialogPrimitive.Close
+        className={cn(
+          "absolute top-4 rounded-full p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/50",
+          side === "right" ? "left-4" : "right-4",
+        )}
+      >
         <X className="size-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
