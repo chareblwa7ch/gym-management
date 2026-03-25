@@ -23,8 +23,8 @@ export function AppShell({ children, userEmail, userRole }: AppShellProps) {
       />
       <div className="flex min-h-screen min-w-0 flex-col">
         <Header onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-          <div className="mx-auto w-full max-w-7xl">{children}</div>
+        <main className="flex-1 px-3 py-4 sm:px-5 sm:py-6 lg:px-7 xl:px-8">
+          <div className="mx-auto w-full max-w-[92rem]">{children}</div>
         </main>
       </div>
     </div>

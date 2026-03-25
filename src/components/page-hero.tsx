@@ -21,18 +21,18 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <Card className={cn("overflow-hidden border-border/70 bg-card/80", className)}>
-      <CardContent className="relative flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
+      <CardContent className="relative flex flex-col gap-4 p-4 sm:gap-5 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="pointer-events-none absolute inset-0 subtle-grid opacity-[0.18] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
 
-        <div className="relative flex items-start gap-4">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/15">
-            <Icon className="size-6" />
+        <div className="relative flex items-start gap-3 sm:gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15 sm:size-14 sm:rounded-3xl">
+            <Icon className="size-5 sm:size-6" />
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">
               {eyebrow}
             </p>
-            <CardTitle className="mt-2 break-words text-3xl font-semibold sm:text-4xl">
+            <CardTitle className="mt-2 break-words text-[2rem] font-semibold sm:text-4xl">
               {title}
             </CardTitle>
             <CardDescription className="mt-3 max-w-3xl text-sm sm:text-base">

@@ -50,15 +50,19 @@ export function MemberQuickList({
   return (
     <>
       <Card className="overflow-hidden border-border/70 bg-card/85">
-        <CardHeader className="gap-4">
+        <CardHeader className="gap-4 p-4 sm:p-6">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-start gap-4">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+            <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15 sm:size-12">
                 <Icon className="size-5" />
               </div>
               <div className="min-w-0">
-                <CardTitle className="text-2xl">{title}</CardTitle>
-                <CardDescription className="mt-2">{description}</CardDescription>
+                <CardTitle className="text-[1.9rem] leading-tight sm:text-2xl">
+                  {title}
+                </CardTitle>
+                <CardDescription className="mt-2 text-base leading-7">
+                  {description}
+                </CardDescription>
               </div>
             </div>
             <Badge variant="muted" className="hidden shrink-0 sm:inline-flex">
@@ -67,13 +71,13 @@ export function MemberQuickList({
           </div>
         </CardHeader>
         <Separator />
-        <CardContent>
+        <CardContent className="p-3 pt-3 sm:p-6 sm:pt-6">
           {members.length ? (
             <div className="space-y-3">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex flex-col gap-4 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 transition-colors hover:bg-muted/45"
+                  className="flex flex-col gap-4 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5 transition-colors hover:bg-muted/45"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -96,18 +100,33 @@ export function MemberQuickList({
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" size="sm" onClick={() => setRenewingMember(member)}>
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full justify-center sm:w-auto"
+                      onClick={() => setRenewingMember(member)}
+                    >
                       <RefreshCw className="size-4" />
                       Renew
                     </Button>
-                    <Button asChild variant="outline" size="sm">
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-center sm:w-auto"
+                    >
                       <Link href={`/members/${member.id}`}>
                         <ArrowRight className="size-4" />
                         Open
                       </Link>
                     </Button>
-                    <Button asChild variant="ghost" size="sm">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="col-span-2 w-full justify-start sm:col-auto sm:w-auto"
+                    >
                       <Link
                         href={getWhatsAppLink(member.phone, member.full_name)}
                         target="_blank"

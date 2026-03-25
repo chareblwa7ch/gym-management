@@ -33,13 +33,13 @@ export function DashboardStatCard({
   tone = "default",
 }: DashboardStatCardProps) {
   return (
-    <Card className="overflow-hidden border-border/70 bg-card/85">
-      <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 pb-4">
+    <Card className="flex h-full flex-col overflow-hidden border-border/70 bg-card/85">
+      <CardHeader className="grid flex-1 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 p-4 pb-5 sm:p-6 sm:pb-5">
         <div className="min-w-0">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="min-h-10 text-sm font-semibold leading-5 text-muted-foreground sm:min-h-12">
             {title}
           </p>
-          <CardTitle className="mt-4 text-4xl font-semibold tracking-tight sm:text-[2.6rem]">
+          <CardTitle className="mt-3 text-4xl font-semibold leading-none tracking-tight sm:mt-4 sm:text-[2.8rem]">
             {value}
           </CardTitle>
         </div>
@@ -51,9 +51,12 @@ export function DashboardStatCard({
         >
           <Icon className="size-5" />
         </div>
+        <CardDescription className="col-span-2 max-w-none text-sm leading-7">
+          {description}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex items-end justify-between gap-3 border-t border-border/60 bg-muted/15 pt-4">
-        <CardDescription className="max-w-[18rem]">{description}</CardDescription>
+      <CardContent className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 bg-muted/15 px-4 py-4 sm:px-6">
+        <p className="text-sm font-medium text-muted-foreground">Today</p>
         <Badge variant="muted" className="shrink-0">
           <Activity className="size-3.5" />
           Overview
