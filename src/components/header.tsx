@@ -39,7 +39,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border/80 bg-background/88 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 items-center gap-4">
           <Button
             type="button"
             variant="outline"
@@ -51,15 +51,15 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             <Menu className="size-5" />
             <span className="sr-only">Open menu</span>
           </Button>
-          <div className="md:hidden">
-            <LogoPlaceholder showName={false} size="sm" />
+          <div className="min-w-0 md:hidden">
+            <LogoPlaceholder size="sm" />
           </div>
-          <div className="min-w-0">
-            <p className="hidden truncate text-xs font-semibold uppercase tracking-[0.24em] text-primary sm:block">
+          <div className="hidden min-w-0 md:block">
+            <p className="truncate text-xs font-semibold uppercase tracking-[0.24em] text-primary">
               {GYM_NAME}
             </p>
-            <h1 className="truncate text-2xl font-semibold sm:text-2xl">{currentPage.title}</h1>
-            <p className="hidden max-w-2xl text-sm text-muted-foreground sm:block">
+            <h1 className="truncate text-2xl font-semibold">{currentPage.title}</h1>
+            <p className="max-w-2xl text-sm text-muted-foreground">
               {currentPage.description}
             </p>
           </div>
