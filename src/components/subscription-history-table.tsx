@@ -79,7 +79,7 @@ export function SubscriptionHistoryTable({
               {subscriptions.map((subscription) => (
                 <div
                   key={subscription.id}
-                  className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5"
+                  className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-gradient-to-br from-card/80 to-muted/28 p-4 shadow-sm sm:p-5"
                 >
                   <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                     <WalletCards className="size-4" />

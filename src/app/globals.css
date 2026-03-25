@@ -100,8 +100,8 @@ html {
 body {
   @apply min-h-screen bg-background font-sans text-foreground antialiased;
   background-image:
-    radial-gradient(circle at top, oklch(0.7 0.132 24.8 / 0.12), transparent 28%),
-    radial-gradient(circle at bottom left, oklch(0.67 0.08 50.2 / 0.08), transparent 34%);
+    radial-gradient(circle at top, oklch(0.7 0.132 24.8 / 0.11), transparent 28%),
+    radial-gradient(circle at bottom left, oklch(0.67 0.08 50.2 / 0.07), transparent 34%);
   overflow-x: clip;
 }
 
@@ -128,8 +128,8 @@ textarea {
 
 .surface-shadow {
   box-shadow:
-    0 14px 38px hsl(var(--shadow-color) / 0.055),
-    0 3px 10px hsl(var(--shadow-color) / 0.06);
+    0 22px 48px hsl(var(--shadow-color) / 0.05),
+    0 6px 18px hsl(var(--shadow-color) / 0.05);
 }
 
 .soft-scrollbar {

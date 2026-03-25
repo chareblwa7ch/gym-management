@@ -73,11 +73,11 @@ export function MemberQuickList({
         <Separator />
         <CardContent className="p-3 pt-3 sm:p-6 sm:pt-6">
           {members.length ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex flex-col gap-4 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 sm:p-5 transition-colors hover:bg-muted/45"
+                  className="flex flex-col gap-4 rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-gradient-to-br from-card/80 to-muted/28 p-4 shadow-sm transition-all hover:border-border hover:bg-muted/40 hover:shadow-md sm:p-5"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -107,11 +107,11 @@ export function MemberQuickList({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                  <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
                     <Button
                       type="button"
                       size="sm"
-                      className="w-full justify-center sm:w-auto"
+                      className="w-full justify-center shadow-sm sm:w-auto"
                       onClick={() => setRenewingMember(member)}
                     >
                       <RefreshCw className="size-4" />

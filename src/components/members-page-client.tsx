@@ -110,7 +110,7 @@ export function MembersPageClient({
               </div>
               <Badge variant="muted">{counts.all} total</Badge>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {filters.map((filter) => (
                 <Button
                   key={filter.value}

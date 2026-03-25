@@ -136,8 +136,8 @@ export function MemberTable({
         </CardHeader>
         <Separator />
 
-        <CardContent className="space-y-3 p-3 pt-3 sm:p-4 sm:pt-4 xl:p-5 xl:pt-5">
-          <div className="hidden rounded-[calc(var(--radius)+0.1rem)] border border-dashed border-border/70 bg-muted/20 px-3 py-3 xl:sticky xl:top-[5.5rem] xl:z-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:gap-4 xl:backdrop-blur">
+        <CardContent className="space-y-4 p-3 pt-3 sm:p-4 sm:pt-4 xl:p-5 xl:pt-5">
+          <div className="hidden rounded-[calc(var(--radius)+0.1rem)] border border-dashed border-border/70 bg-background/72 px-4 py-3 shadow-sm xl:sticky xl:top-[5.5rem] xl:z-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:gap-4 xl:backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Member
             </p>
@@ -161,9 +161,9 @@ export function MemberTable({
           {members.map((member) => (
             <div
               key={member.id}
-              className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-3 sm:p-4 transition-colors hover:bg-muted/45"
+              className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-gradient-to-br from-card/80 to-muted/28 p-3.5 shadow-sm transition-all hover:border-border hover:bg-muted/40 hover:shadow-md sm:p-4"
             >
-              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:items-center">
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:items-center xl:gap-5">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="break-words text-lg font-semibold">{member.full_name}</p>
@@ -171,7 +171,7 @@ export function MemberTable({
                       <StatusBadge status={member.status} />
                     </div>
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground">
                     <span className="break-all">{member.phone}</span>
                     <Link
                       href={getWhatsAppLink(member.phone, {
@@ -182,7 +182,7 @@ export function MemberTable({
                       })}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1 font-semibold text-primary"
+                      className="inline-flex items-center gap-1 rounded-full text-primary underline-offset-4 hover:underline"
                       aria-label={`Open WhatsApp chat for ${member.full_name}`}
                     >
                       <MessageCircle className="size-4" />
@@ -228,12 +228,12 @@ export function MemberTable({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 xl:flex xl:flex-wrap xl:justify-end">
+                <div className="grid grid-cols-2 gap-2.5 xl:flex xl:flex-wrap xl:justify-end">
                   <Button
                     type="button"
                     variant="default"
                     size="sm"
-                    className="w-full justify-center xl:w-auto"
+                    className="w-full justify-center shadow-sm xl:w-auto"
                     onClick={() => setRenewingMember(member)}
                   >
                     <RefreshCw className="size-4" />

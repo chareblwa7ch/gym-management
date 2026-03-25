@@ -4,19 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-[background-color,border-color,color,box-shadow,transform] disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-4 focus-visible:ring-ring/70 active:translate-y-px",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-[background-color,border-color,color,box-shadow,transform] disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-4 focus-visible:ring-ring/70 hover:-translate-y-0.5 active:translate-y-px",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-sm hover:bg-primary/92",
+          "bg-primary text-primary-foreground shadow-sm shadow-primary/15 hover:bg-primary/92 hover:shadow-md hover:shadow-primary/20",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/90",
         outline:
-          "border border-border bg-card/90 text-card-foreground hover:bg-muted",
+          "border border-border/80 bg-card/88 text-card-foreground shadow-sm hover:bg-muted/75 hover:shadow-sm",
         ghost: "text-foreground hover:bg-muted/70",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 hover:shadow-md",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

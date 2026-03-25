@@ -36,16 +36,16 @@ export function DashboardStatCard({
     <Card className="flex h-full flex-col overflow-hidden border-border/70 bg-card/85">
       <CardHeader className="grid flex-1 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 p-4 pb-5 sm:p-6 sm:pb-5">
         <div className="min-w-0">
-          <p className="min-h-10 text-sm font-semibold leading-5 text-muted-foreground sm:min-h-12">
+          <p className="min-h-10 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:min-h-12 sm:text-sm">
             {title}
           </p>
-          <CardTitle className="mt-3 text-4xl font-semibold leading-none tracking-tight sm:mt-4 sm:text-[2.8rem]">
+          <CardTitle className="mt-3 text-[2.8rem] font-semibold leading-none tracking-tight sm:mt-4 sm:text-[3.1rem]">
             {value}
           </CardTitle>
         </div>
         <div
           className={cn(
-            "flex size-12 shrink-0 items-center justify-center rounded-2xl ring-1 ring-white/5",
+            "flex size-12 shrink-0 items-center justify-center rounded-2xl ring-1 ring-black/5 dark:ring-white/5",
             toneStyles[tone],
           )}
         >
@@ -55,7 +55,7 @@ export function DashboardStatCard({
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 bg-muted/15 px-4 py-4 sm:px-6">
+      <CardContent className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 bg-muted/12 px-4 py-4 sm:px-6">
         <p className="text-sm font-medium text-muted-foreground">Live status</p>
         <Badge variant="muted" className="shrink-0">
           <Activity className="size-3.5" />
