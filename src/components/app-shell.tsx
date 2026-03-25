@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { Header } from "@/components/header";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Sidebar } from "@/components/sidebar";
+import { cn } from "@/lib/utils";
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -11,10 +13,16 @@ type AppShellProps = {
 };
 
 export function AppShell({ children, userEmail, userRole }: AppShellProps) {
+  const { direction } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background md:grid md:grid-cols-[6.25rem_1fr] xl:grid-cols-[18.5rem_1fr]">
+    <div
+      className={cn(
+        "min-h-screen bg-background md:flex",
+        direction === "rtl" ? "md:flex-row-reverse" : "md:flex-row",
+      )}
+    >
       <Sidebar
         mobileOpen={mobileOpen}
         onMobileOpenChange={setMobileOpen}

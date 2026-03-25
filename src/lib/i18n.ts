@@ -2,10 +2,14 @@ export const LANGUAGE_COOKIE = "esf-lang";
 
 export type AppLanguage = "en" | "fr" | "ar";
 
-export const languageOptions: Array<{ value: AppLanguage; label: string }> = [
-  { value: "en", label: "EN" },
-  { value: "fr", label: "FR" },
-  { value: "ar", label: "AR" },
+export const languageOptions: Array<{
+  value: AppLanguage;
+  label: string;
+  flag: string;
+}> = [
+  { value: "en", label: "EN", flag: "🇬🇧" },
+  { value: "fr", label: "FR", flag: "🇫🇷" },
+  { value: "ar", label: "AR", flag: "🇲🇦" },
 ];
 
 export function normalizeLanguage(value?: string | null): AppLanguage {

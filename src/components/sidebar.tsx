@@ -129,11 +129,18 @@ export function Sidebar({
   userEmail,
   userRole,
 }: SidebarProps) {
+  const { direction } = useLanguage();
   const pathname = usePathname();
+  const isRtl = direction === "rtl";
 
   return (
     <>
-      <aside className="hidden border-r border-border/70 bg-card/88 backdrop-blur md:block">
+      <aside
+        className={cn(
+          "hidden bg-card/88 backdrop-blur md:block md:w-[6.25rem] xl:w-[18.5rem]",
+          isRtl ? "border-l border-border/70" : "border-r border-border/70",
+        )}
+      >
         <div className="sticky top-0 min-h-screen px-4 py-5">
           <SidebarContent
             pathname={pathname}
@@ -145,9 +152,12 @@ export function Sidebar({
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
-      <SheetContent
-          side="left"
-          className="soft-scrollbar overflow-y-auto border-r border-border/70 bg-card/96 p-5 pt-4"
+        <SheetContent
+          side={isRtl ? "right" : "left"}
+          className={cn(
+            "soft-scrollbar overflow-y-auto bg-card/96 p-5 pt-4",
+            isRtl ? "border-l border-border/70" : "border-r border-border/70",
+          )}
         >
           <SheetHeader />
           <SidebarContent

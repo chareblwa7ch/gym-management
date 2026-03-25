@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useTransition,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ type LanguageContextValue = {
   language: AppLanguage;
   dictionary: AppDictionary;
   direction: "ltr" | "rtl";
+  isChangingLanguage: boolean;
   setLanguage: (language: AppLanguage) => void;
 };
 
@@ -36,6 +38,7 @@ export function LanguageProvider({
 }) {
   const router = useRouter();
   const [language, setLanguageState] = useState<AppLanguage>(initialLanguage);
+  const [isChangingLanguage, startLanguageTransition] = useTransition();
 
   useEffect(() => {
     const normalized = normalizeLanguage(language);
@@ -50,6 +53,7 @@ export function LanguageProvider({
       language,
       dictionary: getDictionary(language),
       direction: getLanguageDirection(language),
+      isChangingLanguage,
       setLanguage: (nextLanguage) => {
         const normalized = normalizeLanguage(nextLanguage);
 
@@ -58,10 +62,26 @@ export function LanguageProvider({
         }
 
         setLanguageState(normalized);
-        router.refresh();
+        startLanguageTransition(async () => {
+          document.cookie = `${LANGUAGE_COOKIE}=${normalized}; path=/; max-age=31536000; samesite=lax`;
+
+          try {
+            await fetch("/api/language", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ language: normalized }),
+            });
+          } catch {
+            // Keep the client-side language update even if the request fails.
+          }
+
+          router.refresh();
+        });
       },
     }),
-    [language, router],
+    [isChangingLanguage, language, router],
   );
 
   return (

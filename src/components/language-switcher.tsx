@@ -1,34 +1,34 @@
 "use client";
 
-import { Languages } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, Languages } from "lucide-react";
 import { languageOptions } from "@/lib/i18n";
 import { useLanguage } from "@/components/providers/language-provider";
 
 export function LanguageSwitcher() {
-  const { language, setLanguage, dictionary } = useLanguage();
+  const { language, setLanguage, dictionary, isChangingLanguage } = useLanguage();
 
   return (
     <div
-      className="flex items-center gap-1 rounded-full border border-border/70 bg-card/90 p-1 shadow-sm"
+      className="relative flex items-center gap-2 rounded-full border border-border/70 bg-card/90 px-3 py-2 shadow-sm"
       aria-label={dictionary.common.language}
     >
-      <div className="hidden sm:flex size-8 items-center justify-center rounded-full text-muted-foreground">
+      <div className="flex size-8 items-center justify-center rounded-full text-muted-foreground">
         <Languages className="size-4" />
       </div>
-      {languageOptions.map((option) => (
-        <Button
-          key={option.value}
-          type="button"
-          size="sm"
-          variant={language === option.value ? "default" : "ghost"}
-          className="h-9 min-w-11 px-3"
-          onClick={() => setLanguage(option.value)}
-          aria-pressed={language === option.value}
-        >
-          {option.label}
-        </Button>
-      ))}
+      <select
+        value={language}
+        onChange={(event) => setLanguage(event.target.value as typeof language)}
+        disabled={isChangingLanguage}
+        aria-label={dictionary.common.language}
+        className="min-w-[7.75rem] appearance-none bg-transparent pe-7 text-sm font-semibold text-foreground outline-none"
+      >
+        {languageOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.flag} {option.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
     </div>
   );
 }
