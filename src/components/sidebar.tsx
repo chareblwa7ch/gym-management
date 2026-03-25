@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   CircleDollarSign,
   LayoutDashboard,
-  MenuSquare,
   Plus,
   Users,
 } from "lucide-react";
@@ -140,16 +139,11 @@ export function Sidebar({
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
-        <SheetContent
+      <SheetContent
           side="left"
           className="soft-scrollbar overflow-y-auto border-r border-border/70 bg-card/96 p-5 pt-4"
         >
-          <SheetHeader>
-            <div className="flex items-center gap-3 text-muted-foreground">
-              <MenuSquare className="size-4" />
-              <span className="text-sm font-medium">Menu</span>
-            </div>
-          </SheetHeader>
+          <SheetHeader />
           <SidebarContent
             pathname={pathname}
             userEmail={userEmail}
