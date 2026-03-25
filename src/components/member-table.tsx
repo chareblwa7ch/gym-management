@@ -121,7 +121,7 @@ export function MemberTable({
   return (
     <>
       <Card className="overflow-hidden border-border/70 bg-card/85">
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex items-start gap-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
               <Users className="size-5" />
@@ -136,8 +136,8 @@ export function MemberTable({
         </CardHeader>
         <Separator />
 
-        <CardContent className="space-y-3">
-          <div className="hidden rounded-[calc(var(--radius)+0.1rem)] border border-dashed border-border/70 bg-muted/20 px-4 py-3 xl:sticky xl:top-[5.5rem] xl:z-10 xl:grid xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(0,0.95fr)_minmax(0,0.8fr)_auto] xl:gap-4 xl:backdrop-blur">
+        <CardContent className="space-y-3 p-3 pt-3 sm:p-4 sm:pt-4 xl:p-5 xl:pt-5">
+          <div className="hidden rounded-[calc(var(--radius)+0.1rem)] border border-dashed border-border/70 bg-muted/20 px-3 py-3 xl:sticky xl:top-[5.5rem] xl:z-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:gap-4 xl:backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Member
             </p>
@@ -161,9 +161,9 @@ export function MemberTable({
           {members.map((member) => (
             <div
               key={member.id}
-              className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-4 transition-colors hover:bg-muted/45"
+              className="rounded-[calc(var(--radius)+0.1rem)] border border-border/70 bg-muted/30 p-3 sm:p-4 transition-colors hover:bg-muted/45"
             >
-              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(0,0.95fr)_minmax(0,0.8fr)_auto] xl:items-center">
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:items-center">
                 <div className="min-w-0">
                   <p className="break-words text-lg font-semibold">{member.full_name}</p>
                   <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
