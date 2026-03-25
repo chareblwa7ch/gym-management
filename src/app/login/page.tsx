@@ -47,7 +47,16 @@ export default async function LoginPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(239,68,68,0.18),_transparent_32%),radial-gradient(circle_at_bottom_left,_rgba(245,158,11,0.1),_transparent_38%)]" />
       <div className="pointer-events-none absolute inset-0 subtle-grid opacity-[0.22] [mask-image:linear-gradient(to_bottom,white,transparent_72%)]" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center px-4 py-6 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-5 flex w-full justify-center sm:justify-end">
+          <div className="flex w-full max-w-sm items-center gap-2 rounded-2xl border border-border/70 bg-card/88 p-2 surface-shadow sm:w-auto sm:max-w-none">
+            <div className="min-w-0 flex-1 sm:w-[10.5rem] sm:flex-none">
+              <LanguageSwitcher />
+            </div>
+            <ThemeToggle showLabel={false} />
+          </div>
+        </div>
+
         <div className="grid w-full gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <Card className="order-2 overflow-hidden border-border/70 bg-card/82 surface-shadow lg:order-1">
             <CardHeader className="space-y-6 p-6 sm:p-8">
@@ -90,15 +99,7 @@ export default async function LoginPage() {
 
           <Card className="order-1 mx-auto w-full max-w-xl overflow-hidden border-border/70 bg-card/92 surface-shadow lg:order-2">
             <CardHeader className="space-y-6 p-6 sm:p-8">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <LogoPlaceholder className="max-w-full" />
-                <div className="flex w-full items-center justify-end gap-2 sm:w-auto sm:shrink-0">
-                  <div className="min-w-0 flex-1 sm:w-[10.5rem] sm:flex-none">
-                    <LanguageSwitcher />
-                  </div>
-                  <ThemeToggle showLabel={false} />
-                </div>
-              </div>
+              <LogoPlaceholder className="max-w-full" />
 
               <div className="space-y-4">
                 <Badge variant="muted" className="w-fit">
