@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { MemberProfileCard } from "@/components/member-profile-card";
 import { PageHero } from "@/components/page-hero";
 import { SubscriptionHistoryTable } from "@/components/subscription-history-table";
+import { getRequestDictionary } from "@/lib/i18n-server";
 import { getMemberById } from "@/lib/members";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default async function MemberDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { dictionary } = await getRequestDictionary();
   const { id } = await params;
   const record = await getMemberById(id);
 
@@ -25,14 +27,26 @@ export default async function MemberDetailsPage({
   return (
     <div className="page-section">
       <PageHero
-        eyebrow="Member details"
+        eyebrow={dictionary.memberProfilePage.eyebrow}
         title={record.member.full_name}
-        description="Review current status, manage renewals, and check the full payment history."
+        description={dictionary.memberProfilePage.description}
         icon={UserSquare2}
       />
 
       <MemberProfileCard member={record.member} />
-      <SubscriptionHistoryTable subscriptions={record.subscriptions} />
+      <SubscriptionHistoryTable
+        subscriptions={record.subscriptions}
+        title={dictionary.history.title}
+        description={dictionary.history.description}
+        paymentRecordLabel={dictionary.history.paymentRecord}
+        emptyTitle={dictionary.history.noHistoryTitle}
+        emptyDescription={dictionary.history.noHistoryDescription}
+        paymentsCountLabel={dictionary.history.payments(record.subscriptions.length)}
+        paymentDateLabel={dictionary.common.paymentDate}
+        expiryDateLabel={dictionary.common.expiryDate}
+        amountLabel={dictionary.common.amount}
+        savedAtLabel={dictionary.common.savedAt}
+      />
     </div>
   );
 }

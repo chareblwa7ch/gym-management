@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Filter, Plus } from "lucide-react";
 import { MemberTable } from "@/components/member-table";
+import { useLanguage } from "@/components/providers/language-provider";
 import { SearchBar } from "@/components/search-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,15 @@ type MembersPageClientProps = {
   counts: Record<MembersStatusFilter, number>;
   initialQuery: string;
   initialStatus: MembersStatusFilter;
+  initialPage: number;
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalMatching: number;
+    totalPages: number;
+    start: number;
+    end: number;
+  };
 };
 
 const filters: Array<{ value: MembersStatusFilter; label: string }> = [
@@ -31,7 +41,10 @@ export function MembersPageClient({
   counts,
   initialQuery,
   initialStatus,
+  initialPage,
+  pagination,
 }: MembersPageClientProps) {
+  const { dictionary } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -54,6 +67,8 @@ export function MembersPageClient({
         params.delete("q");
       }
 
+      params.delete("page");
+
       startTransition(() => {
         router.replace(
           params.toString() ? `${pathname}?${params.toString()}` : pathname,
@@ -74,6 +89,25 @@ export function MembersPageClient({
       params.set("status", status);
     }
 
+    params.delete("page");
+
+    startTransition(() => {
+      router.replace(
+        params.toString() ? `${pathname}?${params.toString()}` : pathname,
+        { scroll: false },
+      );
+    });
+  };
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page <= 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(page));
+    }
+
     startTransition(() => {
       router.replace(
         params.toString() ? `${pathname}?${params.toString()}` : pathname,
@@ -91,13 +125,13 @@ export function MembersPageClient({
               <SearchBar
                 value={query}
                 onChange={setQuery}
-                placeholder="Search members by name or phone"
+                placeholder={dictionary.common.searchMembers}
               />
             </div>
             <Button asChild size="lg" className="w-full sm:w-fit">
               <Link href="/members/new">
                 <Plus className="size-5" />
-                Add member
+                {dictionary.membersPage.addMember}
               </Link>
             </Button>
           </div>
@@ -106,9 +140,9 @@ export function MembersPageClient({
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                 <Filter className="size-4" />
-                Filter members
+                {dictionary.membersPage.filterMembers}
               </div>
-              <Badge variant="muted">{counts.all} total</Badge>
+              <Badge variant="muted">{counts.all} {dictionary.membersPage.total}</Badge>
             </div>
             <div className="flex flex-wrap gap-2.5">
               {filters.map((filter) => (
@@ -120,7 +154,14 @@ export function MembersPageClient({
                   variant={initialStatus === filter.value ? "default" : "outline"}
                   size="default"
                 >
-                  {filter.label} ({counts[filter.value]})
+                  {(filter.value === "all"
+                    ? dictionary.common.all
+                    : filter.value === "active"
+                      ? dictionary.common.active
+                      : filter.value === "expiring-soon"
+                        ? dictionary.common.expiringSoon
+                        : dictionary.common.expired)}{" "}
+                  ({counts[filter.value]})
                 </Button>
               ))}
             </div>
@@ -131,12 +172,48 @@ export function MembersPageClient({
       <MemberTable
         members={members}
         totalMembers={counts.all}
-        filteredCount={members.length}
+        matchingCount={pagination.totalMatching}
+        visibleCount={members.length}
       />
+
+      {pagination.totalPages > 1 ? (
+        <Card className="border-border/70 bg-card/82">
+          <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <p className="text-sm text-muted-foreground">
+              {dictionary.membersPage.showingRange(
+                pagination.start,
+                pagination.end,
+                pagination.totalMatching,
+              )}
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handlePageChange(initialPage - 1)}
+                disabled={isPending || initialPage <= 1}
+              >
+                {dictionary.common.previous}
+              </Button>
+              <div className="flex items-center justify-center rounded-full border border-border/70 bg-muted/40 px-4 py-2 text-sm font-semibold text-muted-foreground">
+                {dictionary.membersPage.pageOf(initialPage, pagination.totalPages)}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handlePageChange(initialPage + 1)}
+                disabled={isPending || initialPage >= pagination.totalPages}
+              >
+                {dictionary.common.next}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
 
       {isPending ? (
         <p aria-live="polite" className="text-sm text-muted-foreground">
-          Updating members list...
+          {dictionary.membersPage.updating}
         </p>
       ) : null}
     </div>

@@ -10,19 +10,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { GYM_PLAN_AMOUNT } from "@/lib/constants";
+import { getRequestDictionary } from "@/lib/i18n-server";
 
 export const metadata: Metadata = {
   title: "Add Member",
 };
 
-export default function NewMemberPage() {
+export default async function NewMemberPage() {
+  const { dictionary } = await getRequestDictionary();
+
   return (
     <div className="page-section xl:grid xl:grid-cols-[1.1fr_0.9fr] xl:gap-6">
       <div className="space-y-6">
         <PageHero
-          eyebrow="New registration"
-          title="Add a member"
-          description="This flow saves the member profile and the first payment together."
+          eyebrow={dictionary.addMemberPage.eyebrow}
+          title={dictionary.addMemberPage.title}
+          description={dictionary.addMemberPage.description}
           icon={ClipboardPenLine}
         />
 
@@ -35,23 +38,21 @@ export default function NewMemberPage() {
             <WalletCards className="size-5" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Quick guide</CardTitle>
-            <CardDescription>
-              A simple checklist for saving a new membership correctly.
-            </CardDescription>
+            <CardTitle className="text-2xl">{dictionary.addMemberPage.quickGuide}</CardTitle>
+            <CardDescription>{dictionary.addMemberPage.quickGuideDescription}</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>1. Enter the member name and phone number.</p>
-          <p>2. Pick the payment date.</p>
-          <p>3. Save the member. The expiry date is calculated automatically.</p>
+          <p>{dictionary.addMemberPage.step1}</p>
+          <p>{dictionary.addMemberPage.step2}</p>
+          <p>{dictionary.addMemberPage.step3}</p>
           <div className="rounded-3xl border border-border/70 bg-muted/40 p-4 text-foreground">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-              Current gym plan
+              {dictionary.common.currentGymPlan}
             </p>
             <p className="mt-2 text-3xl font-semibold">{GYM_PLAN_AMOUNT} DH</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              One monthly plan for all members, valid for 30 days.
+              {dictionary.addMemberPage.gymPlanDescription}
             </p>
           </div>
         </CardContent>

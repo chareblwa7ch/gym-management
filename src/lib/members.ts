@@ -1,9 +1,10 @@
-import { compareByUrgency, enrichMemberRecord } from "@/lib/date";
+import { enrichMemberRecord } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
 import type {
   DashboardCounts,
+  MemberOverviewRow,
   MemberWithSubscription,
-  SubscriptionRow,
+  RecentActivityItem,
 } from "@/lib/types";
 
 export type MembersStatusFilter = "all" | "active" | "expiring-soon" | "expired";
@@ -11,77 +12,147 @@ export type MembersStatusFilter = "all" | "active" | "expiring-soon" | "expired"
 export type MembersListFilters = {
   query?: string;
   status?: MembersStatusFilter | string;
+  page?: number | string;
 };
 
-function createLatestSubscriptionMap(subscriptions: SubscriptionRow[]) {
-  const latestByMember = new Map<string, SubscriptionRow>();
-
-  for (const subscription of subscriptions) {
-    if (!latestByMember.has(subscription.member_id)) {
-      latestByMember.set(subscription.member_id, subscription);
-    }
-  }
-
-  return latestByMember;
-}
+const MEMBERS_PAGE_SIZE = 50;
 
 function sanitizeSearchTerm(value: string) {
   return value.trim().replace(/[,%()]/g, " ");
 }
 
-async function getMembersWithLatestSubscriptions(memberQuery?: string) {
+function mapOverviewRowToMember(row: MemberOverviewRow): MemberWithSubscription {
+  return enrichMemberRecord(row, row.latest_subscription_id
+    ? {
+        id: row.latest_subscription_id,
+        member_id: row.id,
+        amount: row.latest_amount ?? 200,
+        payment_date: row.latest_payment_date ?? "",
+        expiry_date: row.latest_expiry_date ?? "",
+        created_at: row.latest_subscription_created_at ?? row.updated_at,
+      }
+    : null);
+}
+
+async function getMemberOverviewBaseQuery() {
   const supabase = await createClient();
 
   if (!supabase) {
+    return null;
+  }
+
+  return supabase.from("member_overview");
+}
+
+async function getMemberOverviewRows({
+  query,
+  status,
+  limit,
+  page = 1,
+}: {
+  query?: string;
+  status?: MembersStatusFilter;
+  limit?: number;
+  page?: number;
+}) {
+  const baseQuery = await getMemberOverviewBaseQuery();
+
+  if (!baseQuery) {
     return [];
   }
 
-  let membersBuilder = supabase.from("members").select("*").order("full_name");
+  let queryBuilder = baseQuery.select("*").order("full_name");
 
-  if (memberQuery?.trim()) {
-    const safeQuery = sanitizeSearchTerm(memberQuery);
-    membersBuilder = membersBuilder.or(
+  if (query?.trim()) {
+    const safeQuery = sanitizeSearchTerm(query);
+    queryBuilder = queryBuilder.or(
       `full_name.ilike.%${safeQuery}%,phone.ilike.%${safeQuery}%`,
     );
   }
 
-  const membersResult = await membersBuilder;
-
-  if (membersResult.error) {
-    throw membersResult.error;
+  if (status && status !== "all") {
+    queryBuilder = queryBuilder.eq("membership_status", status);
   }
 
-  const members = membersResult.data ?? [];
-
-  if (!members.length) {
-    return [];
+  if (limit) {
+    const from = Math.max(0, (page - 1) * limit);
+    const to = from + limit - 1;
+    queryBuilder = queryBuilder.range(from, to);
   }
 
-  const subscriptionsResult = await supabase
-    .from("subscriptions")
-    .select("*")
-    .in(
-      "member_id",
-      members.map((member) => member.id),
-    )
-    .order("payment_date", { ascending: false })
-    .order("created_at", { ascending: false });
+  const result = await queryBuilder;
 
-  if (subscriptionsResult.error) {
-    throw subscriptionsResult.error;
+  if (result.error) {
+    throw result.error;
   }
 
-  const latestSubscriptions = createLatestSubscriptionMap(
-    subscriptionsResult.data ?? [],
-  );
-
-  return members.map((member) =>
-    enrichMemberRecord(member, latestSubscriptions.get(member.id) ?? null),
-  );
+  return (result.data ?? []).map(mapOverviewRowToMember);
 }
 
-export async function getAllMembers() {
-  return getMembersWithLatestSubscriptions();
+async function getMemberOverviewCount({
+  query,
+  status,
+}: {
+  query?: string;
+  status?: MembersStatusFilter;
+}) {
+  const baseQuery = await getMemberOverviewBaseQuery();
+
+  if (!baseQuery) {
+    return 0;
+  }
+
+  let countQuery = baseQuery.select("*", { count: "exact", head: true });
+
+  if (query?.trim()) {
+    const safeQuery = sanitizeSearchTerm(query);
+    countQuery = countQuery.or(`full_name.ilike.%${safeQuery}%,phone.ilike.%${safeQuery}%`);
+  }
+
+  if (status && status !== "all") {
+    countQuery = countQuery.eq("membership_status", status);
+  }
+
+  const result = await countQuery;
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.count ?? 0;
+}
+
+async function getDashboardStatusCounts(): Promise<DashboardCounts> {
+  const [totalMembers, activeMembers, expiringSoonMembers, expiredMembers] =
+    await Promise.all([
+      getMemberOverviewCount({}),
+      getMemberOverviewCount({ status: "active" }),
+      getMemberOverviewCount({ status: "expiring-soon" }),
+      getMemberOverviewCount({ status: "expired" }),
+    ]);
+
+  return {
+    totalMembers,
+    activeMembers,
+    expiringSoonMembers,
+    expiredMembers,
+  };
+}
+
+export async function getDashboardPageData() {
+  const [counts, expiringMembers, expiredMembers, recentActivity] = await Promise.all([
+    getDashboardStatusCounts(),
+    getMemberOverviewRows({ status: "expiring-soon", limit: 6 }),
+    getMemberOverviewRows({ status: "expired", limit: 6 }),
+    getRecentActivity(),
+  ]);
+
+  return {
+    counts,
+    expiringMembers,
+    expiredMembers,
+    recentActivity,
+  };
 }
 
 export async function getMemberById(memberId: string) {
@@ -121,100 +192,71 @@ export async function getMemberById(memberId: string) {
   };
 }
 
-export function getDashboardCounts(members: MemberWithSubscription[]): DashboardCounts {
-  return members.reduce<DashboardCounts>(
-    (counts, member) => {
-      counts.totalMembers += 1;
-
-      if (member.status === "active") {
-        counts.activeMembers += 1;
-      }
-
-      if (member.status === "expiring-soon") {
-        counts.expiringSoonMembers += 1;
-      }
-
-      if (member.status === "expired") {
-        counts.expiredMembers += 1;
-      }
-
-      return counts;
-    },
-    {
-      totalMembers: 0,
-      activeMembers: 0,
-      expiringSoonMembers: 0,
-      expiredMembers: 0,
-    },
-  );
-}
-
-export function getExpiringSoonMembers(members: MemberWithSubscription[]) {
-  return members
-    .filter((member) => member.status === "expiring-soon")
-    .sort(compareByUrgency);
-}
-
-export function getExpiredMembers(members: MemberWithSubscription[]) {
-  return members
-    .filter((member) => member.status === "expired")
-    .sort(compareByUrgency)
-    .reverse();
-}
-
 export function normalizeMembersStatusFilter(value?: string): MembersStatusFilter {
-  if (
-    value === "active" ||
-    value === "expiring-soon" ||
-    value === "expired"
-  ) {
+  if (value === "active" || value === "expiring-soon" || value === "expired") {
     return value;
   }
 
   return "all";
 }
 
-function filterMembersByStatus(
-  members: MemberWithSubscription[],
-  status: MembersStatusFilter,
-) {
-  if (status === "all") {
-    return members;
+function normalizePageNumber(value?: number | string) {
+  const page = Number(value);
+
+  if (!Number.isFinite(page) || page < 1) {
+    return 1;
   }
 
-  return members.filter((member) => member.status === status);
+  return Math.floor(page);
 }
 
 export async function getMembersPageData(filters: MembersListFilters = {}) {
   const status = normalizeMembersStatusFilter(filters.status);
   const trimmedQuery = filters.query?.trim() ?? "";
+  const requestedPage = normalizePageNumber(filters.page);
 
-  const [allMembers, searchedMembers] = await Promise.all([
-    getAllMembers(),
-    trimmedQuery ? getMembersWithLatestSubscriptions(trimmedQuery) : Promise.resolve(null),
+  const [counts, totalMatching] = await Promise.all([
+    getDashboardStatusCounts(),
+    getMemberOverviewCount({ query: trimmedQuery, status }),
   ]);
 
-  const membersBase = searchedMembers ?? allMembers;
-  const filteredMembers = filterMembersByStatus(membersBase, status);
+  const totalPages = Math.max(1, Math.ceil(totalMatching / MEMBERS_PAGE_SIZE));
+  const page = Math.min(requestedPage, totalPages);
+  const members = await getMemberOverviewRows({
+    query: trimmedQuery,
+    status,
+    limit: MEMBERS_PAGE_SIZE,
+    page,
+  });
+
+  const start = totalMatching ? (page - 1) * MEMBERS_PAGE_SIZE + 1 : 0;
+  const end = totalMatching ? start + members.length - 1 : 0;
 
   return {
-    members: filteredMembers,
+    members,
     counts: {
-      all: allMembers.length,
-      active: allMembers.filter((member) => member.status === "active").length,
-      "expiring-soon": allMembers.filter(
-        (member) => member.status === "expiring-soon",
-      ).length,
-      expired: allMembers.filter((member) => member.status === "expired").length,
+      all: counts.totalMembers,
+      active: counts.activeMembers,
+      "expiring-soon": counts.expiringSoonMembers,
+      expired: counts.expiredMembers,
     },
     filters: {
       query: trimmedQuery,
       status,
+      page,
+    },
+    pagination: {
+      page,
+      pageSize: MEMBERS_PAGE_SIZE,
+      totalMatching,
+      totalPages,
+      start,
+      end,
     },
   };
 }
 
-export async function getRecentActivity() {
+export async function getRecentActivity(): Promise<RecentActivityItem[]> {
   const supabase = await createClient();
 
   if (!supabase) {

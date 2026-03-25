@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,6 +29,7 @@ type RenewModalProps = {
 };
 
 export function RenewModal({ member, open, onOpenChange }: RenewModalProps) {
+  const { dictionary } = useLanguage();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -49,7 +51,7 @@ export function RenewModal({ member, open, onOpenChange }: RenewModalProps) {
         return;
       }
 
-      toast.success(`${member.full_name} has been renewed.`);
+      toast.success(dictionary.renewModal.renewed(member.full_name));
       onOpenChange(false);
       router.refresh();
     });
@@ -59,14 +61,14 @@ export function RenewModal({ member, open, onOpenChange }: RenewModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Renew membership</DialogTitle>
+          <DialogTitle>{dictionary.renewModal.title}</DialogTitle>
           <DialogDescription>
-            Save a new monthly payment for {member?.full_name ?? "this member"}.
+            {dictionary.renewModal.description(member?.full_name ?? dictionary.common.members)}
           </DialogDescription>
         </DialogHeader>
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="renew-payment-date">Payment date</Label>
+            <Label htmlFor="renew-payment-date">{dictionary.common.paymentDate}</Label>
             <Input
               key={`${member?.id ?? "member"}-${open ? "open" : "closed"}`}
               id="renew-payment-date"
@@ -77,7 +79,7 @@ export function RenewModal({ member, open, onOpenChange }: RenewModalProps) {
               aria-describedby="renew-payment-date-help"
             />
             <p id="renew-payment-date-help" className="text-sm text-muted-foreground">
-              The app will automatically set the expiry date 30 days later.
+              {dictionary.renewModal.paymentHelp}
             </p>
           </div>
 
@@ -88,11 +90,11 @@ export function RenewModal({ member, open, onOpenChange }: RenewModalProps) {
               onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
-              Cancel
+              {dictionary.common.cancel}
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? <LoadingSpinner /> : null}
-              Confirm renewal
+              {dictionary.renewModal.confirm}
             </Button>
           </DialogFooter>
         </form>

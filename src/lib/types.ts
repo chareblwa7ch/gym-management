@@ -72,7 +72,26 @@ export interface Database {
         ];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      member_overview: {
+        Row: {
+          id: string;
+          full_name: string;
+          phone: string;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+          latest_subscription_id: string | null;
+          latest_amount: number | null;
+          latest_payment_date: string | null;
+          latest_expiry_date: string | null;
+          latest_subscription_created_at: string | null;
+          days_remaining: number | null;
+          membership_status: MembershipStatus;
+        };
+        Relationships: [];
+      };
+    };
     Functions: {
       create_member_with_subscription: {
         Args: {
@@ -98,6 +117,7 @@ export interface Database {
 
 export type MemberRow = Database["public"]["Tables"]["members"]["Row"];
 export type SubscriptionRow = Database["public"]["Tables"]["subscriptions"]["Row"];
+export type MemberOverviewRow = Database["public"]["Views"]["member_overview"]["Row"];
 
 export type MembershipStatus =
   | "active"

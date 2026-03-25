@@ -23,8 +23,28 @@ import { formatCurrencyDh } from "@/lib/utils";
 
 export function SubscriptionHistoryTable({
   subscriptions,
+  title = "Payment history",
+  description = "Every renewal is saved as its own payment record.",
+  paymentRecordLabel = "Payment record",
+  emptyTitle = "No subscription history yet",
+  emptyDescription = "The member's payment records will appear here as soon as they are saved.",
+  paymentsCountLabel,
+  paymentDateLabel = "Payment date",
+  expiryDateLabel = "Expiry date",
+  amountLabel = "Amount",
+  savedAtLabel = "Saved at",
 }: {
   subscriptions: SubscriptionRow[];
+  title?: string;
+  description?: string;
+  paymentRecordLabel?: string;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  paymentsCountLabel?: string;
+  paymentDateLabel?: string;
+  expiryDateLabel?: string;
+  amountLabel?: string;
+  savedAtLabel?: string;
 }) {
   return (
     <Card className="overflow-hidden border-border/70 bg-card/85">
@@ -34,14 +54,12 @@ export function SubscriptionHistoryTable({
             <History className="size-5" />
           </div>
           <div>
-            <CardTitle className="text-2xl">Payment history</CardTitle>
-            <CardDescription>
-              Every renewal is saved as its own payment record.
-            </CardDescription>
+            <CardTitle className="text-2xl">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
           </div>
         </div>
         <Badge variant="muted">
-          {subscriptions.length} payment{subscriptions.length === 1 ? "" : "s"}
+          {paymentsCountLabel ?? `${subscriptions.length} payment${subscriptions.length === 1 ? "" : "s"}`}
         </Badge>
       </CardHeader>
       <Separator />
@@ -52,10 +70,10 @@ export function SubscriptionHistoryTable({
               <Table>
                 <TableHeader className="sticky top-[5.5rem] z-10 bg-card/95 backdrop-blur">
                   <TableRow>
-                    <TableHead>Payment date</TableHead>
-                    <TableHead>Expiry date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Saved at</TableHead>
+                    <TableHead>{paymentDateLabel}</TableHead>
+                    <TableHead>{expiryDateLabel}</TableHead>
+                    <TableHead>{amountLabel}</TableHead>
+                    <TableHead>{savedAtLabel}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,29 +101,29 @@ export function SubscriptionHistoryTable({
                 >
                   <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
                     <WalletCards className="size-4" />
-                    Payment record
+                    {paymentRecordLabel}
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <p className="text-muted-foreground">Payment date</p>
+                      <p className="text-muted-foreground">{paymentDateLabel}</p>
                       <p className="font-semibold">
                         {formatDisplayDate(subscription.payment_date)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Expiry date</p>
+                      <p className="text-muted-foreground">{expiryDateLabel}</p>
                       <p className="font-semibold">
                         {formatDisplayDate(subscription.expiry_date)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Amount</p>
+                      <p className="text-muted-foreground">{amountLabel}</p>
                       <p className="font-semibold">
                         {formatCurrencyDh(subscription.amount)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Saved at</p>
+                      <p className="text-muted-foreground">{savedAtLabel}</p>
                       <p className="font-semibold">
                         {formatDateTime(subscription.created_at)}
                       </p>
@@ -117,8 +135,8 @@ export function SubscriptionHistoryTable({
           </>
         ) : (
           <EmptyState
-            title="No subscription history yet"
-            description="The member's payment records will appear here as soon as they are saved."
+            title={emptyTitle}
+            description={emptyDescription}
             icon={History}
           />
         )}

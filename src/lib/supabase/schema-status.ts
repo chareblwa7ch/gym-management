@@ -26,12 +26,13 @@ export async function getSupabaseSchemaStatus() {
     };
   }
 
-  const [membersResult, subscriptionsResult] = await Promise.all([
+  const [membersResult, subscriptionsResult, memberOverviewResult] = await Promise.all([
     supabase.from("members").select("id").limit(1),
     supabase.from("subscriptions").select("id").limit(1),
+    supabase.from("member_overview").select("id").limit(1),
   ]);
 
-  if (!membersResult.error && !subscriptionsResult.error) {
+  if (!membersResult.error && !subscriptionsResult.error && !memberOverviewResult.error) {
     return {
       ready: true as const,
       reason: null,
@@ -39,7 +40,8 @@ export async function getSupabaseSchemaStatus() {
     };
   }
 
-  const blockingError = membersResult.error ?? subscriptionsResult.error;
+  const blockingError =
+    membersResult.error ?? subscriptionsResult.error ?? memberOverviewResult.error;
 
   if (blockingError && isMissingSchemaError(blockingError)) {
     return {

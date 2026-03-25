@@ -1,4 +1,7 @@
+"use client";
+
 import { Search, X } from "lucide-react";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Input } from "@/components/ui/input";
 
 type SearchBarProps = {
@@ -12,6 +15,8 @@ export function SearchBar({
   onChange,
   placeholder = "Search by name or phone",
 }: SearchBarProps) {
+  const { dictionary } = useLanguage();
+
   return (
     <div className="relative">
       <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -28,7 +33,7 @@ export function SearchBar({
         <button
           type="button"
           onClick={() => onChange("")}
-          aria-label="Clear search"
+          aria-label={`${dictionary.common.delete} search`}
           className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/60"
         >
           <X className="size-4" />

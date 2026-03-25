@@ -68,12 +68,18 @@ function getMembershipStatusMessage({
   return `Hello${name}, this is ${GYM_NAME}. We are sharing a quick update about your gym membership.`;
 }
 
-export function getWhatsAppActionLabel(status?: MembershipStatus) {
+export function getWhatsAppActionLabel(
+  status?: MembershipStatus,
+  labels?: {
+    sendReminder: string;
+    whatsApp: string;
+  },
+) {
   if (status === "expiring-soon" || status === "expired") {
-    return "Send reminder";
+    return labels?.sendReminder ?? "Send reminder";
   }
 
-  return "WhatsApp";
+  return labels?.whatsApp ?? "WhatsApp";
 }
 
 export function getWhatsAppLink(

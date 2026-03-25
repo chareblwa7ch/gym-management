@@ -22,13 +22,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDisplayDate } from "@/lib/date";
-import {
-  getAllMembers,
-  getDashboardCounts,
-  getExpiredMembers,
-  getExpiringSoonMembers,
-  getRecentActivity,
-} from "@/lib/members";
+import { getRequestDictionary } from "@/lib/i18n-server";
+import { getDashboardPageData } from "@/lib/members";
 import type { MemberWithSubscription, RecentActivityItem } from "@/lib/types";
 import { formatCurrencyDh } from "@/lib/utils";
 
@@ -37,45 +32,43 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  let members: MemberWithSubscription[] = [];
+  const { dictionary } = await getRequestDictionary();
+  let counts = {
+    totalMembers: 0,
+    activeMembers: 0,
+    expiringSoonMembers: 0,
+    expiredMembers: 0,
+  };
+  let expiringMembers: MemberWithSubscription[] = [];
+  let expiredMembers: MemberWithSubscription[] = [];
   let recentActivity: RecentActivityItem[] = [];
   let dashboardMessage: string | null = null;
 
   try {
-    members = await getAllMembers();
+    const dashboardData = await getDashboardPageData();
+    counts = dashboardData.counts;
+    expiringMembers = dashboardData.expiringMembers;
+    expiredMembers = dashboardData.expiredMembers;
+    recentActivity = dashboardData.recentActivity;
   } catch (error) {
     dashboardMessage =
       error instanceof Error
         ? error.message
-        : "Member data could not be loaded from Supabase.";
+        : "Dashboard data could not be loaded from Supabase.";
   }
-
-  try {
-    recentActivity = await getRecentActivity();
-  } catch (error) {
-    dashboardMessage =
-      dashboardMessage ??
-      (error instanceof Error
-        ? error.message
-        : "Recent activity could not be loaded from Supabase.");
-  }
-
-  const counts = getDashboardCounts(members);
-  const expiringMembers = getExpiringSoonMembers(members).slice(0, 6);
-  const expiredMembers = getExpiredMembers(members).slice(0, 6);
 
   return (
     <div className="page-section">
       <PageHero
-        eyebrow="Today at a glance"
-        title="Membership dashboard"
-        description="See who needs attention first, then renew, search, and manage members without extra steps."
+        eyebrow={dictionary.dashboardPage.eyebrow}
+        title={dictionary.dashboardPage.title}
+        description={dictionary.dashboardPage.description}
         icon={Users}
         action={
           <Button asChild size="lg" className="w-full sm:w-fit">
             <Link href="/members/new">
               <UserPlus className="size-5" />
-              Add new member
+              {dictionary.dashboardPage.addNewMember}
             </Link>
           </Button>
         }
@@ -90,12 +83,10 @@ export default async function DashboardPage() {
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-semibold text-foreground">
-                  Some dashboard data could not load
+                  {dictionary.dashboardPage.dataLoadWarningTitle}
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  The page is still available, but one Supabase query failed. Check
-                  the schema, policies, and environment variables if this keeps
-                  happening.
+                  {dictionary.dashboardPage.dataLoadWarningDescription}
                 </p>
                 <p className="break-words text-xs text-muted-foreground/90">
                   {dashboardMessage}
@@ -103,7 +94,7 @@ export default async function DashboardPage() {
               </div>
             </div>
             <Button asChild variant="outline" className="sm:self-center">
-              <Link href="/members">Open members</Link>
+              <Link href="/members">{dictionary.dashboardPage.openMembers}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -111,51 +102,59 @@ export default async function DashboardPage() {
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <DashboardStatCard
-          title="Total Members"
+          title={dictionary.dashboardPage.totalMembers}
           value={counts.totalMembers}
-          description="All registered gym members"
+          description={dictionary.dashboardPage.totalMembersDescription}
           icon={Users}
+          footerLabel={dictionary.dashboardPage.liveStatus}
+          footerBadgeLabel={dictionary.dashboardPage.overview}
         />
         <DashboardStatCard
-          title="Active"
+          title={dictionary.dashboardPage.activeMembers}
           value={counts.activeMembers}
-          description="Members with a valid subscription today"
+          description={dictionary.dashboardPage.activeMembersDescription}
           icon={ShieldCheck}
           tone="success"
+          footerLabel={dictionary.dashboardPage.liveStatus}
+          footerBadgeLabel={dictionary.dashboardPage.overview}
         />
         <DashboardStatCard
-          title="Expiring Soon"
+          title={dictionary.dashboardPage.expiringSoonMembers}
           value={counts.expiringSoonMembers}
-          description="Members with 2 days or less remaining"
+          description={dictionary.dashboardPage.expiringSoonDescription}
           icon={Clock3}
           tone="warning"
+          footerLabel={dictionary.dashboardPage.liveStatus}
+          footerBadgeLabel={dictionary.dashboardPage.overview}
         />
         <DashboardStatCard
-          title="Expired"
+          title={dictionary.dashboardPage.expiredMembers}
           value={counts.expiredMembers}
-          description="Members who need a renewal"
+          description={dictionary.dashboardPage.expiredMembersDescription}
           icon={AlertTriangle}
           tone="danger"
+          footerLabel={dictionary.dashboardPage.liveStatus}
+          footerBadgeLabel={dictionary.dashboardPage.overview}
         />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
         <MemberQuickList
-          title="Expiring Soon Members"
-          description="These members are the most urgent to follow up with today."
+          title={dictionary.dashboardPage.expiringListTitle}
+          description={dictionary.dashboardPage.expiringListDescription}
           icon="clock"
           members={expiringMembers}
-          emptyTitle="No urgent renewals right now"
-          emptyDescription="Everyone has more than 2 days left on their current subscription."
+          emptyTitle={dictionary.dashboardPage.expiringEmptyTitle}
+          emptyDescription={dictionary.dashboardPage.expiringEmptyDescription}
         />
 
         <MemberQuickList
-          title="Expired Members"
-          description="These members have already passed their membership end date."
+          title={dictionary.dashboardPage.expiredListTitle}
+          description={dictionary.dashboardPage.expiredListDescription}
           icon="alert"
           members={expiredMembers}
-          emptyTitle="No expired memberships"
-          emptyDescription="There are no expired members to renew at the moment."
+          emptyTitle={dictionary.dashboardPage.expiredEmptyTitle}
+          emptyDescription={dictionary.dashboardPage.expiredEmptyDescription}
         />
       </section>
 
@@ -166,14 +165,14 @@ export default async function DashboardPage() {
               <Activity className="size-5" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Recent Renewals</CardTitle>
+              <CardTitle className="text-2xl">{dictionary.dashboardPage.recentRenewals}</CardTitle>
               <CardDescription>
-                Latest payments and renewals saved by staff.
+                {dictionary.dashboardPage.recentRenewalsDescription}
               </CardDescription>
             </div>
           </div>
           <Button asChild variant="outline">
-            <Link href="/members">Open all members</Link>
+            <Link href="/members">{dictionary.dashboardPage.openAllMembers}</Link>
           </Button>
         </CardHeader>
         <CardContent className="p-3 pt-3 sm:p-6 sm:pt-6">
@@ -190,20 +189,20 @@ export default async function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-base font-semibold">
-                        {activity.member?.full_name ?? "Unknown member"}
+                        {activity.member?.full_name ?? dictionary.common.unknownMember}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Paid {formatCurrencyDh(activity.amount)} on{" "}
+                        {dictionary.dashboardPage.paid} {formatCurrencyDh(activity.amount)} {dictionary.dashboardPage.on}{" "}
                         {formatDisplayDate(activity.payment_date)}
                       </p>
                     </div>
                   </div>
                   <div className="text-sm">
                     <p className="font-semibold">
-                      Expires {formatDisplayDate(activity.expiry_date)}
+                      {dictionary.dashboardPage.expires} {formatDisplayDate(activity.expiry_date)}
                     </p>
                     <p className="text-muted-foreground">
-                      {activity.member?.phone ?? "No phone saved"}
+                      {activity.member?.phone ?? dictionary.common.noPhoneSaved}
                     </p>
                   </div>
                 </div>
@@ -211,8 +210,8 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <EmptyState
-              title="No payments saved yet"
-              description="Recent member renewals will appear here as soon as they are recorded."
+              title={dictionary.dashboardPage.noPaymentsTitle}
+              description={dictionary.dashboardPage.noPaymentsDescription}
               icon={WalletCards}
             />
           )}

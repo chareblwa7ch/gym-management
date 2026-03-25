@@ -18,6 +18,8 @@ type DeleteConfirmationModalProps = {
   description: string;
   onConfirm: () => void;
   pending?: boolean;
+  cancelLabel?: string;
+  confirmLabel?: string;
 };
 
 export function DeleteConfirmationModal({
@@ -27,6 +29,8 @@ export function DeleteConfirmationModal({
   description,
   onConfirm,
   pending = false,
+  cancelLabel = "Cancel",
+  confirmLabel = "Delete member",
 }: DeleteConfirmationModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,16 +43,16 @@ export function DeleteConfirmationModal({
           <Button
             type="button"
             variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={pending}
-          >
-            Cancel
-          </Button>
-          <Button type="button" variant="destructive" onClick={onConfirm} disabled={pending}>
-            {pending ? <LoadingSpinner /> : null}
-            Delete member
-          </Button>
-        </DialogFooter>
+          onClick={() => onOpenChange(false)}
+          disabled={pending}
+        >
+          {cancelLabel}
+        </Button>
+        <Button type="button" variant="destructive" onClick={onConfirm} disabled={pending}>
+          {pending ? <LoadingSpinner /> : null}
+          {confirmLabel}
+        </Button>
+      </DialogFooter>
       </DialogContent>
     </Dialog>
   );

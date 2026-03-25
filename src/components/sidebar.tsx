@@ -9,7 +9,9 @@ import {
   Users,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { LogoPlaceholder } from "@/components/logo-placeholder";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import { GYM_PLAN_AMOUNT } from "@/lib/constants";
 import { cn, toTitleCase } from "@/lib/utils";
@@ -20,12 +22,6 @@ type SidebarProps = {
   userEmail: string;
   userRole: string;
 };
-
-const navigation = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/members", label: "Members", icon: Users },
-  { href: "/members/new", label: "Add Member", icon: Plus },
-];
 
 function SidebarContent({
   pathname,
@@ -40,6 +36,13 @@ function SidebarContent({
   compact?: boolean;
   onNavigate?: () => void;
 }) {
+  const { dictionary } = useLanguage();
+  const navigation = [
+    { href: "/dashboard", label: dictionary.common.dashboard, icon: LayoutDashboard },
+    { href: "/members", label: dictionary.common.members, icon: Users },
+    { href: "/members/new", label: dictionary.common.addMember, icon: Plus },
+  ];
+
   return (
     <div className="flex h-full flex-col gap-6">
       {compact ? (
@@ -93,7 +96,7 @@ function SidebarContent({
             <CircleDollarSign className="size-5" />
           </div>
           <div>
-            <p>Monthly plan</p>
+            <p>{dictionary.common.monthlyPlan}</p>
             <p className="text-xl text-foreground">{GYM_PLAN_AMOUNT} DH</p>
           </div>
         </div>
@@ -108,8 +111,11 @@ function SidebarContent({
             {userEmail}
           </p>
           <p className={cn("text-xs text-muted-foreground", compact ? "hidden xl:block" : "")}>
-            Internal access only
+            {dictionary.common.internalAccessOnly}
           </p>
+        </div>
+        <div className={cn("mb-4", compact ? "hidden xl:block" : "")}>
+          <LanguageSwitcher />
         </div>
         <SignOutButton compact={compact} />
       </div>

@@ -1,4 +1,5 @@
 create extension if not exists pgcrypto;
+create extension if not exists pg_trgm;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -65,11 +66,53 @@ create table if not exists public.subscriptions (
 
 create index if not exists members_full_name_idx on public.members(full_name);
 create index if not exists members_phone_idx on public.members(phone);
+create index if not exists members_full_name_trgm_idx on public.members using gin(full_name gin_trgm_ops);
+create index if not exists members_phone_trgm_idx on public.members using gin(phone gin_trgm_ops);
 create index if not exists subscriptions_member_id_idx on public.subscriptions(member_id);
 create index if not exists subscriptions_payment_date_idx on public.subscriptions(payment_date desc);
+create index if not exists subscriptions_member_latest_idx on public.subscriptions(member_id, payment_date desc, created_at desc);
+
+create or replace view public.member_overview as
+with latest_subscription as (
+  select distinct on (s.member_id)
+    s.member_id,
+    s.id as latest_subscription_id,
+    s.amount as latest_amount,
+    s.payment_date as latest_payment_date,
+    s.expiry_date as latest_expiry_date,
+    s.created_at as latest_subscription_created_at
+  from public.subscriptions s
+  order by s.member_id, s.payment_date desc, s.created_at desc
+)
+select
+  m.id,
+  m.full_name,
+  m.phone,
+  m.notes,
+  m.created_at,
+  m.updated_at,
+  ls.latest_subscription_id,
+  ls.latest_amount,
+  ls.latest_payment_date,
+  ls.latest_expiry_date,
+  ls.latest_subscription_created_at,
+  case
+    when ls.latest_expiry_date is null then null
+    else (ls.latest_expiry_date - timezone('Africa/Casablanca', now())::date)
+  end as days_remaining,
+  case
+    when ls.latest_expiry_date is null then 'no-subscription'
+    when ls.latest_expiry_date < timezone('Africa/Casablanca', now())::date then 'expired'
+    when ls.latest_expiry_date <= timezone('Africa/Casablanca', now())::date + 2 then 'expiring-soon'
+    else 'active'
+  end as membership_status
+from public.members m
+left join latest_subscription ls on ls.member_id = m.id;
 
 alter table public.members enable row level security;
 alter table public.subscriptions enable row level security;
+
+grant select on public.member_overview to authenticated;
 
 drop policy if exists "Authenticated users can read members" on public.members;
 drop policy if exists "Authenticated users can insert members" on public.members;

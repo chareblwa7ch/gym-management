@@ -5,12 +5,14 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function SignOutButton({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { dictionary } = useLanguage();
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -33,10 +35,10 @@ export function SignOutButton({ compact = false }: { compact?: boolean }) {
       variant="ghost"
       className={compact ? "w-full justify-center xl:justify-start" : "w-full justify-start"}
       onClick={handleSignOut}
-      aria-label="Sign out"
+      aria-label={dictionary.common.signOut}
     >
       {isPending ? <LoadingSpinner /> : <LogOut className="size-4" />}
-      <span className={compact ? "hidden xl:inline" : ""}>Sign out</span>
+      <span className={compact ? "hidden xl:inline" : ""}>{dictionary.common.signOut}</span>
     </Button>
   );
 }

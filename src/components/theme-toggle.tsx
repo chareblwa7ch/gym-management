@@ -3,12 +3,14 @@
 import dynamic from "next/dynamic";
 import { MoonStar, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 
 function ThemeToggleInner() {
+  const { dictionary } = useLanguage();
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const label = isDark ? "Light mode" : "Dark mode";
+  const label = isDark ? dictionary.common.lightMode : dictionary.common.darkMode;
 
   return (
     <Button

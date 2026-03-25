@@ -16,6 +16,8 @@ type DashboardStatCardProps = {
   description: string;
   icon: LucideIcon;
   tone?: "default" | "success" | "warning" | "danger";
+  footerLabel?: string;
+  footerBadgeLabel?: string;
 };
 
 const toneStyles = {
@@ -31,6 +33,8 @@ export function DashboardStatCard({
   description,
   icon: Icon,
   tone = "default",
+  footerLabel = "Live status",
+  footerBadgeLabel = "Overview",
 }: DashboardStatCardProps) {
   return (
     <Card className="flex h-full flex-col overflow-hidden border-border/70 bg-card/85">
@@ -56,10 +60,10 @@ export function DashboardStatCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-auto flex items-center justify-between gap-3 border-t border-border/60 bg-muted/12 px-4 py-4 sm:px-6">
-        <p className="text-sm font-medium text-muted-foreground">Live status</p>
+        <p className="text-sm font-medium text-muted-foreground">{footerLabel}</p>
         <Badge variant="muted" className="shrink-0">
           <Activity className="size-3.5" />
-          Overview
+          {footerBadgeLabel}
         </Badge>
       </CardContent>
     </Card>

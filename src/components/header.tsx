@@ -3,36 +3,38 @@
 import Link from "next/link";
 import { Menu, Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { LogoPlaceholder } from "@/components/logo-placeholder";
+import { useLanguage } from "@/components/providers/language-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { GYM_NAME } from "@/lib/constants";
 
-const pageCopy = [
-  {
-    matcher: (pathname: string) => pathname === "/dashboard",
-    title: "Dashboard",
-    description: "See expiring memberships first and keep renewals moving.",
-  },
-  {
-    matcher: (pathname: string) => pathname === "/members",
-    title: "Members",
-    description: "Search quickly, update details, and renew in one tap.",
-  },
-  {
-    matcher: (pathname: string) => pathname === "/members/new",
-    title: "Add Member",
-    description: "Register a new member and save the first payment in seconds.",
-  },
-  {
-    matcher: (pathname: string) => pathname.startsWith("/members/"),
-    title: "Member Profile",
-    description: "Review status, notes, and payment history.",
-  },
-];
-
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
+  const { dictionary } = useLanguage();
+  const pageCopy = [
+    {
+      matcher: (value: string) => value === "/dashboard",
+      title: dictionary.common.dashboard,
+      description: dictionary.header.dashboardDescription,
+    },
+    {
+      matcher: (value: string) => value === "/members",
+      title: dictionary.common.members,
+      description: dictionary.header.membersDescription,
+    },
+    {
+      matcher: (value: string) => value === "/members/new",
+      title: dictionary.common.addMember,
+      description: dictionary.header.addMemberDescription,
+    },
+    {
+      matcher: (value: string) => value.startsWith("/members/"),
+      title: dictionary.common.memberProfile,
+      description: dictionary.header.memberProfileDescription,
+    },
+  ];
   const currentPage =
     pageCopy.find((item) => item.matcher(pathname)) ?? pageCopy[0];
 
@@ -46,10 +48,10 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             size="sm"
             onClick={onMenuClick}
             className="size-12 rounded-2xl px-0 md:hidden"
-            aria-label="Open menu"
+            aria-label={dictionary.header.openMenu}
           >
             <Menu className="size-5" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{dictionary.header.openMenu}</span>
           </Button>
           <div className="min-w-0 md:hidden">
             <LogoPlaceholder size="sm" />
@@ -66,12 +68,15 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline" className="hidden sm:inline-flex">
+          <Button asChild variant="outline" className="hidden lg:inline-flex">
             <Link href="/members/new">
               <Plus className="size-4" />
-              New Member
+              {dictionary.common.newMember}
             </Link>
           </Button>
+          <div className="hidden xl:block">
+            <LanguageSwitcher />
+          </div>
           <ThemeToggle />
         </div>
       </div>

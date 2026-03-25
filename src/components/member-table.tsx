@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { DeleteConfirmationModal } from "@/components/delete-confirmation-modal";
 import { EditMemberModal } from "@/components/edit-member-modal";
 import { EmptyState } from "@/components/empty-state";
+import { useLanguage } from "@/components/providers/language-provider";
 import { RenewModal } from "@/components/renew-modal";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDisplayDate } from "@/lib/date";
+import { formatDisplayDate, getLocalizedRelativeExpiryLabel } from "@/lib/date";
 import { deleteMember } from "@/lib/member-mutations";
 import { getWhatsAppActionLabel, getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
@@ -38,7 +39,8 @@ import type { MemberWithSubscription } from "@/lib/types";
 type MemberTableProps = {
   members: MemberWithSubscription[];
   totalMembers: number;
-  filteredCount: number;
+  matchingCount: number;
+  visibleCount: number;
 };
 
 function MemberField({
@@ -66,8 +68,10 @@ function MemberField({
 export function MemberTable({
   members,
   totalMembers,
-  filteredCount,
+  matchingCount,
+  visibleCount,
 }: MemberTableProps) {
+  const { dictionary } = useLanguage();
   const router = useRouter();
   const [renewingMember, setRenewingMember] = useState<MemberWithSubscription | null>(
     null,
@@ -106,11 +110,15 @@ export function MemberTable({
       <Card>
         <CardContent className="pt-6">
           <EmptyState
-            title={hasAnyMembers ? "No members match this filter" : "No members yet"}
+            title={
+              hasAnyMembers
+                ? dictionary.membersPage.noMatchTitle
+                : dictionary.membersPage.noMembersTitle
+            }
             description={
               hasAnyMembers
-                ? "Try another search term or status filter, or add a new member."
-                : "Add the first member to start tracking payments and membership expiry."
+                ? dictionary.membersPage.noMatchDescription
+                : dictionary.membersPage.noMembersDescription
             }
           />
         </CardContent>
@@ -127,9 +135,11 @@ export function MemberTable({
               <Users className="size-5" />
             </div>
             <div>
-              <CardTitle className="text-2xl">Member list</CardTitle>
+              <CardTitle className="text-2xl">{dictionary.membersPage.memberList}</CardTitle>
               <CardDescription>
-                Showing {filteredCount} of {totalMembers} members
+                {matchingCount === totalMembers
+                  ? dictionary.membersPage.showingMembers(visibleCount, totalMembers)
+                  : dictionary.membersPage.showingMatching(visibleCount, matchingCount)}
               </CardDescription>
             </div>
           </div>
@@ -139,22 +149,22 @@ export function MemberTable({
         <CardContent className="space-y-4 p-3 pt-3 sm:p-4 sm:pt-4 xl:p-5 xl:pt-5">
           <div className="hidden rounded-[calc(var(--radius)+0.1rem)] border border-dashed border-border/70 bg-background/72 px-4 py-3 shadow-sm xl:sticky xl:top-[5.5rem] xl:z-10 xl:grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.9fr)_auto] xl:gap-4 xl:backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Member
+              {dictionary.common.members}
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Last Payment
+              {dictionary.common.lastPayment}
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Expiry Date
+              {dictionary.common.expiryDate}
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Membership
+              {dictionary.common.membership}
             </p>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Status
+              {dictionary.common.status}
             </p>
             <p className="text-right text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Actions
+              {dictionary.membersPage.actions}
             </p>
           </div>
 
@@ -186,7 +196,10 @@ export function MemberTable({
                       aria-label={`Open WhatsApp chat for ${member.full_name}`}
                     >
                       <MessageCircle className="size-4" />
-                      {getWhatsAppActionLabel(member.status)}
+                      {getWhatsAppActionLabel(member.status, {
+                        sendReminder: dictionary.common.sendReminder,
+                        whatsApp: dictionary.common.whatsApp,
+                      })}
                     </Link>
                   </div>
                 </div>
@@ -195,7 +208,7 @@ export function MemberTable({
 
                 <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 xl:contents">
                   <MemberField
-                    label="Last Payment"
+                    label={dictionary.common.lastPayment}
                     icon={CalendarClock}
                     value={
                       <p className="font-semibold">
@@ -205,7 +218,7 @@ export function MemberTable({
                   />
 
                   <MemberField
-                    label="Expiry Date"
+                    label={dictionary.common.expiryDate}
                     icon={CalendarDays}
                     value={
                       <p className="font-semibold">
@@ -215,14 +228,18 @@ export function MemberTable({
                   />
 
                   <MemberField
-                    label="Membership"
+                    label={dictionary.common.membership}
                     icon={Hourglass}
                     className="col-span-2 lg:col-span-1"
-                    value={<p className="break-words font-semibold">{member.relativeExpiry}</p>}
+                    value={
+                      <p className="break-words font-semibold">
+                        {getLocalizedRelativeExpiryLabel(member.daysRemaining, dictionary)}
+                      </p>
+                    }
                   />
 
                   <MemberField
-                    label="Status"
+                    label={dictionary.common.status}
                     icon={Users}
                     value={<div className="hidden xl:block"><StatusBadge status={member.status} /></div>}
                   />
@@ -237,12 +254,12 @@ export function MemberTable({
                     onClick={() => setRenewingMember(member)}
                   >
                     <RefreshCw className="size-4" />
-                    Renew
+                    {dictionary.common.renew}
                   </Button>
                   <Button asChild variant="outline" size="sm" className="w-full justify-center xl:w-auto">
                     <Link href={`/members/${member.id}`}>
                       <Eye className="size-4" />
-                      View
+                      {dictionary.common.view}
                     </Link>
                   </Button>
                   <Button
@@ -254,7 +271,7 @@ export function MemberTable({
                     aria-label={`Edit ${member.full_name}`}
                   >
                     <Pencil className="size-4" />
-                    Edit
+                    {dictionary.common.edit}
                   </Button>
                   <Button
                     type="button"
@@ -265,7 +282,7 @@ export function MemberTable({
                     aria-label={`Delete ${member.full_name}`}
                   >
                     <Trash2 className="size-4 text-rose-500" />
-                    Delete
+                    {dictionary.common.delete}
                   </Button>
                 </div>
               </div>
@@ -301,8 +318,10 @@ export function MemberTable({
             setDeletingMember(null);
           }
         }}
-        title={`Delete ${deletingMember?.full_name ?? "member"}?`}
-        description="This removes the member and every payment record linked to them. This action cannot be undone."
+        title={`${dictionary.common.delete} ${deletingMember?.full_name ?? dictionary.common.memberProfile}?`}
+        description={dictionary.memberProfilePage.deleteDescription}
+        cancelLabel={dictionary.common.cancel}
+        confirmLabel={dictionary.deleteModal.confirmDelete}
         onConfirm={handleDelete}
         pending={isDeleting}
       />

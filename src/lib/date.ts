@@ -1,4 +1,5 @@
 import { EXPIRING_SOON_DAYS, GYM_TIME_ZONE } from "@/lib/constants";
+import type { AppDictionary } from "@/lib/i18n";
 import type {
   MemberRow,
   MemberWithSubscription,
@@ -92,6 +93,35 @@ export function getRelativeExpiryLabel(
   }
 
   return `${daysRemaining} days left`;
+}
+
+export function getLocalizedRelativeExpiryLabel(
+  daysRemaining: number | null,
+  dictionary: AppDictionary,
+) {
+  if (daysRemaining === null) {
+    return dictionary.common.noSubscriptionText;
+  }
+
+  if (daysRemaining < 0) {
+    const expiredFor = Math.abs(daysRemaining);
+
+    if (expiredFor === 1) {
+      return dictionary.common.expiredYesterday;
+    }
+
+    return dictionary.common.expiredDaysAgo(expiredFor);
+  }
+
+  if (daysRemaining === 0) {
+    return dictionary.common.expiresToday;
+  }
+
+  if (daysRemaining === 1) {
+    return dictionary.common.oneDayLeft;
+  }
+
+  return dictionary.common.daysLeft(daysRemaining);
 }
 
 export function formatDisplayDate(dateString: string | null) {

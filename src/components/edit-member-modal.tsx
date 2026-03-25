@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,6 +40,7 @@ export function EditMemberModal({
   open,
   onOpenChange,
 }: EditMemberModalProps) {
+  const { dictionary } = useLanguage();
   const router = useRouter();
   const [errors, setErrors] = useState<FormErrors>({});
   const [isPending, startTransition] = useTransition();
@@ -66,19 +68,19 @@ export function EditMemberModal({
     const nextErrors: FormErrors = {};
 
     if (!fullName) {
-      nextErrors.fullName = "Please enter the member's full name.";
+      nextErrors.fullName = dictionary.addMemberPage.fullNameError;
     }
 
     if (!phone) {
-      nextErrors.phone = "Please enter a phone number.";
+      nextErrors.phone = dictionary.addMemberPage.phoneErrorMissing;
     } else if (phoneDigits.length < 8) {
-      nextErrors.phone = "Phone number looks too short.";
+      nextErrors.phone = dictionary.addMemberPage.phoneErrorShort;
     }
 
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      toast.error("Please fix the highlighted fields.");
+      toast.error(dictionary.addMemberPage.fixHighlightedFields);
       return;
     }
 
@@ -95,7 +97,7 @@ export function EditMemberModal({
         return;
       }
 
-      toast.success("Member details updated.");
+      toast.success(dictionary.memberProfilePage.updated);
       onOpenChange(false);
       router.refresh();
     });
@@ -105,9 +107,9 @@ export function EditMemberModal({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit member</DialogTitle>
+          <DialogTitle>{dictionary.editModal.title}</DialogTitle>
           <DialogDescription>
-            Update the member&apos;s basic contact details and notes.
+            {dictionary.editModal.description}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -117,7 +119,7 @@ export function EditMemberModal({
           noValidate
         >
           <div className="space-y-2">
-            <Label htmlFor="edit-member-name">Full name</Label>
+            <Label htmlFor="edit-member-name">{dictionary.common.fullName}</Label>
             <Input
               id="edit-member-name"
               name="fullName"
@@ -132,7 +134,7 @@ export function EditMemberModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-member-phone">Phone number</Label>
+            <Label htmlFor="edit-member-phone">{dictionary.common.phone}</Label>
             <Input
               id="edit-member-phone"
               name="phone"
@@ -147,12 +149,12 @@ export function EditMemberModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-member-notes">Notes</Label>
+            <Label htmlFor="edit-member-notes">{dictionary.common.notes}</Label>
             <Textarea
               id="edit-member-notes"
               name="notes"
               defaultValue={member?.notes ?? ""}
-              placeholder="Optional staff notes"
+              placeholder={dictionary.addMemberPage.notesPlaceholder}
             />
           </div>
 
@@ -163,11 +165,11 @@ export function EditMemberModal({
               onClick={() => handleOpenChange(false)}
               disabled={isPending}
             >
-              Cancel
+              {dictionary.common.cancel}
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? <LoadingSpinner /> : null}
-              Save changes
+              {dictionary.common.saveChanges}
             </Button>
           </DialogFooter>
         </form>

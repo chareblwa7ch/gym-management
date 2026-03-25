@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Clock3, MessageCircle, RefreshCw } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { useLanguage } from "@/components/providers/language-provider";
 import { RenewModal } from "@/components/renew-modal";
 import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDisplayDate } from "@/lib/date";
+import { formatDisplayDate, getLocalizedRelativeExpiryLabel } from "@/lib/date";
 import { getWhatsAppActionLabel, getWhatsAppLink } from "@/lib/phone";
 import type { MemberWithSubscription } from "@/lib/types";
 
@@ -42,6 +43,7 @@ export function MemberQuickList({
   emptyTitle,
   emptyDescription,
 }: MemberQuickListProps) {
+  const { dictionary } = useLanguage();
   const Icon = quickListIcons[icon];
   const [renewingMember, setRenewingMember] = useState<MemberWithSubscription | null>(
     null,
@@ -96,14 +98,16 @@ export function MemberQuickList({
 
                   <div className="grid gap-3 text-sm sm:grid-cols-2">
                     <div>
-                      <p className="text-muted-foreground">Expiry date</p>
+                      <p className="text-muted-foreground">{dictionary.common.expiryDate}</p>
                       <p className="font-semibold">
                         {formatDisplayDate(member.latestSubscription?.expiry_date ?? null)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Membership</p>
-                      <p className="font-semibold">{member.relativeExpiry}</p>
+                      <p className="text-muted-foreground">{dictionary.common.membership}</p>
+                      <p className="font-semibold">
+                        {getLocalizedRelativeExpiryLabel(member.daysRemaining, dictionary)}
+                      </p>
                     </div>
                   </div>
 
@@ -115,7 +119,7 @@ export function MemberQuickList({
                       onClick={() => setRenewingMember(member)}
                     >
                       <RefreshCw className="size-4" />
-                      Renew
+                      {dictionary.common.renew}
                     </Button>
                     <Button
                       asChild
@@ -125,7 +129,7 @@ export function MemberQuickList({
                     >
                       <Link href={`/members/${member.id}`}>
                         <ArrowRight className="size-4" />
-                        Open
+                        {dictionary.common.open}
                       </Link>
                     </Button>
                     <Button
@@ -145,7 +149,10 @@ export function MemberQuickList({
                         rel="noreferrer"
                       >
                         <MessageCircle className="size-4" />
-                        {getWhatsAppActionLabel(member.status)}
+                        {getWhatsAppActionLabel(member.status, {
+                          sendReminder: dictionary.common.sendReminder,
+                          whatsApp: dictionary.common.whatsApp,
+                        })}
                       </Link>
                     </Button>
                   </div>

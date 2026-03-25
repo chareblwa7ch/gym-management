@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { AlertCircle, ArrowRight, Lock, Mail } from "lucide-react";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm() {
+  const { dictionary } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function LoginForm() {
     const normalizedEmail = email.trim();
 
     if (!normalizedEmail || !password) {
-      setErrorMessage("Enter both your staff email and password.");
+      setErrorMessage(dictionary.login.missingCredentials);
       return;
     }
 
@@ -35,13 +37,13 @@ export function LoginForm() {
       });
 
       if (error) {
-        setErrorMessage("The email or password is incorrect. Please try again.");
+        setErrorMessage(dictionary.login.invalidCredentials);
         return;
       }
 
       window.location.assign("/dashboard");
     } catch {
-      setErrorMessage("Sign in could not be completed right now. Please try again.");
+      setErrorMessage(dictionary.login.loginFailed);
     } finally {
       setIsSubmitting(false);
     }
@@ -51,7 +53,7 @@ export function LoginForm() {
     <form className="space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-2.5">
         <Label htmlFor="email" className="text-sm font-semibold">
-          Staff email
+          {dictionary.login.staffEmail}
         </Label>
         <div className="relative">
           <Mail className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -60,7 +62,7 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="owner@gym.com"
+            placeholder={dictionary.login.emailPlaceholder}
             className="pl-11"
             required
             autoComplete="email"
@@ -69,7 +71,7 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2.5">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{dictionary.login.password}</Label>
         <div className="relative">
           <Lock className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -77,7 +79,7 @@ export function LoginForm() {
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="Enter your password"
+            placeholder={dictionary.login.passwordPlaceholder}
             className="pl-11"
             required
             autoComplete="current-password"
@@ -101,11 +103,11 @@ export function LoginForm() {
         ) : (
           <ArrowRight className="size-5" />
         )}
-        Sign in
+        {dictionary.login.signIn}
       </Button>
 
       <p className="text-center text-sm leading-6 text-muted-foreground">
-        Internal access only. Members do not use this system.
+        {dictionary.login.internalOnlyFooter}
       </p>
     </form>
   );

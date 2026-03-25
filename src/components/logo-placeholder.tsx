@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/components/providers/language-provider";
 import { GYM_INITIALS, GYM_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ export function LogoPlaceholder({
   className,
 }: LogoPlaceholderProps) {
   const [hasRealLogo, setHasRealLogo] = useState(false);
+  const { dictionary } = useLanguage();
 
   useEffect(() => {
     let isActive = true;
@@ -73,7 +75,7 @@ export function LogoPlaceholder({
       {showName ? (
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold uppercase tracking-[0.22em] text-primary">
-            Staff App
+            {dictionary.common.staffApp}
           </p>
           <p className="truncate text-base font-semibold leading-tight text-foreground">
             {GYM_NAME}
