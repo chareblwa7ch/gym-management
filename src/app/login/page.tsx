@@ -90,11 +90,13 @@ export default async function LoginPage() {
 
           <Card className="order-1 mx-auto w-full max-w-xl overflow-hidden border-border/70 bg-card/92 surface-shadow lg:order-2">
             <CardHeader className="space-y-6 p-6 sm:p-8">
-              <div className="flex items-start justify-between gap-4">
-                <LogoPlaceholder />
-                <div className="flex items-center gap-2">
-                  <LanguageSwitcher />
-                  <ThemeToggle />
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <LogoPlaceholder className="max-w-full" />
+                <div className="flex w-full items-center justify-end gap-2 sm:w-auto sm:shrink-0">
+                  <div className="min-w-0 flex-1 sm:w-[10.5rem] sm:flex-none">
+                    <LanguageSwitcher />
+                  </div>
+                  <ThemeToggle showLabel={false} />
                 </div>
               </div>
 

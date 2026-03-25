@@ -6,7 +6,11 @@ import { useTheme } from "next-themes";
 import { useLanguage } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 
-function ThemeToggleInner() {
+type ThemeToggleInnerProps = {
+  showLabel?: boolean;
+};
+
+function ThemeToggleInner({ showLabel = true }: ThemeToggleInnerProps) {
   const { dictionary } = useLanguage();
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -23,11 +27,11 @@ function ThemeToggleInner() {
       className="min-w-[2.5rem] gap-2 px-3 sm:px-4"
     >
       {isDark ? <SunMedium className="size-4" /> : <MoonStar className="size-4" />}
-      <span className="hidden text-sm sm:inline">{label}</span>
+      {showLabel ? <span className="hidden text-sm sm:inline">{label}</span> : null}
     </Button>
   );
 }
 
-export const ThemeToggle = dynamic(async () => ThemeToggleInner, {
+export const ThemeToggle = dynamic<ThemeToggleInnerProps>(async () => ThemeToggleInner, {
   ssr: false,
 });
