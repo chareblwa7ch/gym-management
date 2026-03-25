@@ -9,10 +9,12 @@ import { useLanguage } from "@/components/providers/language-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { GYM_NAME } from "@/lib/constants";
+import { getPwaCopy } from "@/lib/pwa-copy";
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
+  const pwaCopy = getPwaCopy(language);
   const pageCopy = [
     {
       matcher: (value: string) => value === "/dashboard",
@@ -33,6 +35,11 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
       matcher: (value: string) => value.startsWith("/members/"),
       title: dictionary.common.memberProfile,
       description: dictionary.header.memberProfileDescription,
+    },
+    {
+      matcher: (value: string) => value === "/install",
+      title: pwaCopy.navLabel,
+      description: pwaCopy.headerDescription,
     },
   ];
   const currentPage =

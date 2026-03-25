@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   CircleDollarSign,
+  Download,
   LayoutDashboard,
   Plus,
   Users,
@@ -14,6 +15,7 @@ import { LogoPlaceholder } from "@/components/logo-placeholder";
 import { useLanguage } from "@/components/providers/language-provider";
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import { GYM_PLAN_AMOUNT } from "@/lib/constants";
+import { getPwaCopy } from "@/lib/pwa-copy";
 import { cn, toTitleCase } from "@/lib/utils";
 
 type SidebarProps = {
@@ -36,11 +38,13 @@ function SidebarContent({
   compact?: boolean;
   onNavigate?: () => void;
 }) {
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
+  const pwaCopy = getPwaCopy(language);
   const navigation = [
     { href: "/dashboard", label: dictionary.common.dashboard, icon: LayoutDashboard },
     { href: "/members", label: dictionary.common.members, icon: Users },
     { href: "/members/new", label: dictionary.common.addMember, icon: Plus },
+    { href: "/install", label: pwaCopy.navLabel, icon: Download },
   ];
 
   return (
