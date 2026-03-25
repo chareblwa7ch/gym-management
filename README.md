@@ -10,6 +10,7 @@ Simple internal membership management for ElAmidy Sports Fitness. The app is bui
 - Track active, expiring soon, and expired memberships
 - Search members quickly by name or phone
 - Open WhatsApp reminders from member screens
+- Install the dashboard as a PWA on phone or desktop
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ Simple internal membership management for ElAmidy Sports Fitness. The app is bui
 - Lucide icons
 - Supabase Auth + Postgres
 - Vercel deployment
+- Progressive Web App manifest + offline fallback
 
 ## Environment Variables
 
