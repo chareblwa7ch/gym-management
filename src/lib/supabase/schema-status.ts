@@ -26,9 +26,12 @@ export async function getSupabaseSchemaStatus() {
     };
   }
 
-  const result = await supabase.from("members").select("id").limit(1);
+  const [membersResult, subscriptionsResult] = await Promise.all([
+    supabase.from("members").select("id").limit(1),
+    supabase.from("subscriptions").select("id").limit(1),
+  ]);
 
-  if (!result.error) {
+  if (!membersResult.error && !subscriptionsResult.error) {
     return {
       ready: true as const,
       reason: null,
@@ -36,13 +39,15 @@ export async function getSupabaseSchemaStatus() {
     };
   }
 
-  if (isMissingSchemaError(result.error)) {
+  const blockingError = membersResult.error ?? subscriptionsResult.error;
+
+  if (blockingError && isMissingSchemaError(blockingError)) {
     return {
       ready: false as const,
       reason: "schema-missing" as const,
-      message: result.error.message,
+      message: blockingError.message,
     };
   }
 
-  throw result.error;
+  throw blockingError;
 }

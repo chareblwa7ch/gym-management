@@ -29,6 +29,7 @@ import {
   getExpiringSoonMembers,
   getRecentActivity,
 } from "@/lib/members";
+import type { MemberWithSubscription, RecentActivityItem } from "@/lib/types";
 import { formatCurrencyDh } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -36,10 +37,28 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const [members, recentActivity] = await Promise.all([
-    getAllMembers(),
-    getRecentActivity(),
-  ]);
+  let members: MemberWithSubscription[] = [];
+  let recentActivity: RecentActivityItem[] = [];
+  let dashboardMessage: string | null = null;
+
+  try {
+    members = await getAllMembers();
+  } catch (error) {
+    dashboardMessage =
+      error instanceof Error
+        ? error.message
+        : "Member data could not be loaded from Supabase.";
+  }
+
+  try {
+    recentActivity = await getRecentActivity();
+  } catch (error) {
+    dashboardMessage =
+      dashboardMessage ??
+      (error instanceof Error
+        ? error.message
+        : "Recent activity could not be loaded from Supabase.");
+  }
 
   const counts = getDashboardCounts(members);
   const expiringMembers = getExpiringSoonMembers(members).slice(0, 6);
@@ -61,6 +80,34 @@ export default async function DashboardPage() {
           </Button>
         }
       />
+
+      {dashboardMessage ? (
+        <Card className="border-amber-500/20 bg-amber-500/8">
+          <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl bg-amber-500/12 text-amber-800 dark:text-amber-300">
+                <AlertTriangle className="size-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-foreground">
+                  Some dashboard data could not load
+                </p>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  The page is still available, but one Supabase query failed. Check
+                  the schema, policies, and environment variables if this keeps
+                  happening.
+                </p>
+                <p className="break-words text-xs text-muted-foreground/90">
+                  {dashboardMessage}
+                </p>
+              </div>
+            </div>
+            <Button asChild variant="outline" className="sm:self-center">
+              <Link href="/members">Open members</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <DashboardStatCard

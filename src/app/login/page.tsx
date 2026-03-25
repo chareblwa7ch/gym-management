@@ -41,7 +41,7 @@ export default async function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.18),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(16,185,129,0.15),_transparent_40%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(239,68,68,0.18),_transparent_35%),radial-gradient(circle_at_bottom_left,_rgba(245,158,11,0.12),_transparent_40%)]" />
       <div className="relative grid w-full max-w-6xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <Card className="hidden overflow-hidden lg:block">
           <CardHeader className="relative pb-0">
@@ -62,7 +62,7 @@ export default async function LoginPage() {
           </CardHeader>
           <CardContent className="grid gap-4 py-8">
             <div className="rounded-3xl bg-muted/40 p-5">
-              <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">
+              <div className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-primary/12 text-primary">
                 <Zap className="size-5" />
               </div>
               <h3 className="text-lg font-semibold">Fast renewals</h3>

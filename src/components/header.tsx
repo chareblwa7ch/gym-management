@@ -45,7 +45,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             variant="outline"
             size="sm"
             onClick={onMenuClick}
-            className="px-3 md:hidden"
+            className="size-12 rounded-2xl px-0 md:hidden"
             aria-label="Open menu"
           >
             <Menu className="size-5" />
@@ -55,10 +55,10 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             <LogoPlaceholder showName={false} size="sm" />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+            <p className="hidden truncate text-xs font-semibold uppercase tracking-[0.24em] text-primary sm:block">
               {GYM_NAME}
             </p>
-            <h1 className="truncate text-xl font-semibold sm:text-2xl">{currentPage.title}</h1>
+            <h1 className="truncate text-2xl font-semibold sm:text-2xl">{currentPage.title}</h1>
             <p className="hidden max-w-2xl text-sm text-muted-foreground sm:block">
               {currentPage.description}
             </p>

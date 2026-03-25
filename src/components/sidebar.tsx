@@ -43,12 +43,18 @@ function SidebarContent({
 }) {
   return (
     <div className="flex h-full flex-col gap-6">
-      <div className={compact ? "xl:hidden" : ""}>
-        <LogoPlaceholder showName={!compact} size="md" />
-      </div>
-      <div className={compact ? "hidden xl:block" : ""}>
+      {compact ? (
+        <>
+          <div className="xl:hidden">
+            <LogoPlaceholder showName={false} size="md" />
+          </div>
+          <div className="hidden xl:block">
+            <LogoPlaceholder size="md" />
+          </div>
+        </>
+      ) : (
         <LogoPlaceholder size="md" />
-      </div>
+      )}
 
       <nav className="space-y-2" aria-label="Primary navigation">
         {navigation.map((item) => {
@@ -84,7 +90,7 @@ function SidebarContent({
         )}
       >
         <div className="flex items-center gap-3 text-sm font-semibold">
-          <div className="flex size-10 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">
+          <div className="flex size-10 items-center justify-center rounded-full bg-primary/12 text-primary">
             <CircleDollarSign className="size-5" />
           </div>
           <div>
@@ -136,7 +142,7 @@ export function Sidebar({
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
         <SheetContent
           side="left"
-          className="soft-scrollbar overflow-y-auto border-r border-border/70 bg-card/96"
+          className="soft-scrollbar overflow-y-auto border-r border-border/70 bg-card/96 p-5 pt-4"
         >
           <SheetHeader>
             <div className="flex items-center gap-3 text-muted-foreground">
